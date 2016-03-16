@@ -475,6 +475,7 @@ bool applicationContinueUserActivity(id self, SEL _cmd, UIApplication* applicati
     }];
 }
 
+
 - (void)getCreditHistory:(id)args
 {
     ENSURE_ARG_COUNT(args, 0);
@@ -483,14 +484,13 @@ bool applicationContinueUserActivity(id self, SEL _cmd, UIApplication* applicati
 
     [branch getCreditHistoryWithCallback:^(NSArray *list, NSError *error) {
         if (!error) {
-            [self fireEvent:@"bio:getCreditHistory" withObject:list];
+            [self fireEvent:@"bio:getCreditHistory" withObject:@{@"creditHistory": list}];
         }
         else {
             [self fireEvent:@"bio:getCreditHistory" withObject:@{@"error":[error localizedDescription]}];
         }
     }];
 }
-
 
 #pragma mark - logout
 

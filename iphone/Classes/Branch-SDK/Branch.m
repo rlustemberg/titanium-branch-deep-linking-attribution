@@ -38,6 +38,11 @@
 #import "BranchSpotlightUrlRequest.h"
 #import "BranchRegisterViewRequest.h"
 
+//Fabric
+#import "FABKitProtocol.h"
+#import "Fabric+FABKits.h"
+
+
 NSString * const BRANCH_FEATURE_TAG_SHARE = @"share";
 NSString * const BRANCH_FEATURE_TAG_REFERRAL = @"referral";
 NSString * const BRANCH_FEATURE_TAG_INVITE = @"invite";
@@ -56,7 +61,7 @@ NSString * const BRANCH_INIT_KEY_IS_FIRST_SESSION = @"+is_first_session";
 NSString * const BRANCH_INIT_KEY_CLICKED_BRANCH_LINK = @"+clicked_branch_link";
 NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
-@interface Branch() <BranchDeepLinkingControllerCompletionDelegate>
+@interface Branch() <BranchDeepLinkingControllerCompletionDelegate, FABKit>
 
 
 @property (strong, nonatomic) BNCServerInterface *bServerInterface;
@@ -93,7 +98,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 + (Branch *)getInstance {
     BNCPreferenceHelper *preferenceHelper = [BNCPreferenceHelper preferenceHelper];
-
+    
     // If no Branch Key
     NSString *branchKey = [preferenceHelper getBranchKey:YES];
     NSString *keyToUse = branchKey;
@@ -101,7 +106,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
         // If no app key
         NSString *appKey = preferenceHelper.appKey;
         if (!appKey) {
-            NSLog(@"[Branch Warning] Please enter your branch_key in the plist!");
+            [preferenceHelper logWarning:@"Please enter your branch_key in the plist!"];
             return nil;
         }
         else {
@@ -109,13 +114,13 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
             NSLog(@"Usage of App Key is deprecated, please move toward using a Branch key");
         }
     }
-
+    
     return [Branch getInstanceInternal:keyToUse returnNilIfNoCurrentInstance:NO];
 }
 
 + (Branch *)getTestInstance {
     BNCPreferenceHelper *preferenceHelper = [BNCPreferenceHelper preferenceHelper];
-
+    
     // If no Branch Key
     NSString *branchKey = [preferenceHelper getBranchKey:NO];
     NSString *keyToUse = branchKey;
@@ -123,29 +128,29 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
         // If no app key
         NSString *appKey = preferenceHelper.appKey;
         if (!appKey) {
-            NSLog(@"[Branch Warning] Please enter your branch_key in the plist!");
+            [preferenceHelper logWarning:@"Please enter your branch_key in the plist!"];
             return nil;
         }
         // If they did provide an app key, show them a warning. Shouldn't use app key with a test instance.
         else {
-            NSLog(@"[Branch Warning] You requested the test instance, but provided an app key. App Keys cannot be used for test instances. Additionally, usage of App Key is deprecated, please move toward using a Branch key");
+            [preferenceHelper logWarning:@"You requested the test instance, but provided an app key. App Keys cannot be used for test instances. Additionally, usage of App Key is deprecated, please move toward using a Branch key"];
             keyToUse = appKey;
         }
     }
-
+    
     return [Branch getInstanceInternal:keyToUse returnNilIfNoCurrentInstance:NO];
 }
 
 + (Branch *)getInstance:(NSString *)branchKey {
     BNCPreferenceHelper *preferenceHelper = [BNCPreferenceHelper preferenceHelper];
-
+    
     if ([branchKey rangeOfString:@"key_"].location != NSNotFound) {
         preferenceHelper.branchKey = branchKey;
     }
     else {
         preferenceHelper.appKey = branchKey;
     }
-
+    
     return [Branch getInstanceInternal:branchKey returnNilIfNoCurrentInstance:NO];
 }
 
@@ -157,7 +162,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
         _linkCache = cache;
         _preferenceHelper = preferenceHelper;
         _branchKey = key;
-
+        
         _contentDiscoveryManager = [[BNCContentDiscoveryManager alloc] init];
         _isInitialized = NO;
         _shouldCallSessionInitCallback = YES;
@@ -165,12 +170,12 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
         _networkCount = 0;
         _deepLinkControllers = [[NSMutableDictionary alloc] init];
         _useCookieBasedMatching = YES;
-
+        
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
         [notificationCenter addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(applicationDidBecomeActive) name:UIApplicationDidBecomeActiveNotification object:nil];
     }
-
+    
     return self;
 }
 
@@ -259,6 +264,9 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
     self.accountForFacebookSDK = YES;
 }
 
+- (void)suppressWarningLogs {
+    self.preferenceHelper.suppressWarningLogs = YES;
+}
 #pragma mark - InitSession Permutation methods
 
 - (void)initSessionWithLaunchOptions:(NSDictionary *)options {
@@ -313,7 +321,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (void)initSessionWithLaunchOptions:(NSDictionary *)options isReferrable:(BOOL)isReferrable explicitlyRequestedReferrable:(BOOL)explicitlyRequestedReferrable automaticallyDisplayController:(BOOL)automaticallyDisplayController {
     self.shouldAutomaticallyDeepLink = automaticallyDisplayController;
-
+    
     self.preferenceHelper.isReferrable = isReferrable;
     self.preferenceHelper.explicitlyRequestedReferrable = explicitlyRequestedReferrable;
 
@@ -324,7 +332,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
             self.preferenceHelper.universalLinkUrl = branchUrlFromPush;
         }
     }
-
+    
     if ([BNCSystemObserver getOSVersion].integerValue >= 8) {
         if (![options objectForKey:UIApplicationLaunchOptionsURLKey] && ![options objectForKey:UIApplicationLaunchOptionsUserActivityDictionaryKey]) {
             [self initUserSessionAndCallCallback:YES];
@@ -362,16 +370,16 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
         if (!query) {
             query = [url query];
         }
-
+        
         NSDictionary *params = [BNCEncodingUtils decodeQueryStringToDictionary:query];
         if (params[@"link_click_id"]) {
             handled = YES;
             self.preferenceHelper.linkClickIdentifier = params[@"link_click_id"];
         }
     }
-
+    
     [self initUserSessionAndCallCallback:YES];
-
+    
     return handled;
 }
 
@@ -381,7 +389,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
         self.preferenceHelper.universalLinkUrl = [userActivity.webpageURL absoluteString];
         [self initUserSessionAndCallCallback:YES];
         self.preferenceHelper.isContinuingUserActivity = NO;
-
+        
         id branchUniversalLinkDomains = [self.preferenceHelper getBranchUniversalLinkDomains];
         if ([branchUniversalLinkDomains isKindOfClass:[NSString class]] && [[userActivity.webpageURL absoluteString] containsString:branchUniversalLinkDomains]) {
             return YES;
@@ -393,13 +401,13 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
                 }
             }
         }
-
+        
         return [[userActivity.webpageURL absoluteString] containsString:@"bnc.lt"];
     }
-
+    
     //check to see if a spotlight activity needs to be handled
     NSString *spotlightIdentifier = [self.contentDiscoveryManager spotlightIdentifierFromActivity:userActivity];
-
+    
     if (spotlightIdentifier) {
         self.preferenceHelper.spotlightIdentifier = spotlightIdentifier;
     }
@@ -411,7 +419,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
     }
     [self initUserSessionAndCallCallback:YES];
     self.preferenceHelper.isContinuingUserActivity = NO;
-
+    
     return spotlightIdentifier != nil;
 }
 
@@ -467,9 +475,9 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
         }
         return;
     }
-
+    
     [self initSessionIfNeededAndNotInProgress];
-
+    
     BranchSetIdentityRequest *req = [[BranchSetIdentityRequest alloc] initWithUserId:userId callback:callback];
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
@@ -485,12 +493,12 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
         NSLog(@"Branch is not initialized, cannot logout");
         if (callback) {callback(NO, nil);}
     }
-
+    
     BranchLogoutRequest *req = [[BranchLogoutRequest alloc] initWithCallback:^(BOOL success, NSError *error) {
         if (success) {
             // Clear cached links
             self.linkCache = [[BNCLinkCache alloc] init];
-
+            
             if (callback) {
                 callback(YES, nil);
             }
@@ -506,7 +514,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
             }
         }
     }];
-
+    
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
 }
@@ -517,7 +525,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (void)loadActionCountsWithCallback:(callbackWithStatus)callback {
     [self initSessionIfNeededAndNotInProgress];
-
+    
     BranchLoadActionsRequest *req = [[BranchLoadActionsRequest alloc] initWithCallback:callback];
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
@@ -532,17 +540,21 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 }
 
 - (void)userCompletedAction:(NSString *)action {
-    [self userCompletedAction:action withState:nil];
+    [self userCompletedAction:action withState:nil withDelegate:nil];
 }
 
 - (void)userCompletedAction:(NSString *)action withState:(NSDictionary *)state {
+    [self userCompletedAction:action withState:state withDelegate:nil];
+}
+
+- (void)userCompletedAction:(NSString *)action withState:(NSDictionary *)state withDelegate:(id)branchViewCallback {
     if (!action) {
         return;
     }
-
+    
     [self initSessionIfNeededAndNotInProgress];
-
-    BranchUserCompletedActionRequest *req = [[BranchUserCompletedActionRequest alloc] initWithAction:action state:state];
+    
+    BranchUserCompletedActionRequest *req = [[BranchUserCompletedActionRequest alloc] initWithAction:action state:state withBranchViewCallback:branchViewCallback];
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
 }
@@ -552,7 +564,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (void)loadRewardsWithCallback:(callbackWithStatus)callback {
     [self initSessionIfNeededAndNotInProgress];
-
+    
     BranchLoadRewardsRequest *req = [[BranchLoadRewardsRequest alloc] initWithCallback:callback];
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
@@ -584,24 +596,24 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
             callback(false, [NSError errorWithDomain:BNCErrorDomain code:BNCRedeemCreditsError userInfo:@{ NSLocalizedDescriptionKey: @"Cannot redeem zero credits." }]);
         }
         else {
-            NSLog(@"[Branch Warning] Cannot redeem zero credits");
+            [self.preferenceHelper logWarning:@"Cannot redeem zero credits"];
         }
         return;
     }
-
+    
     NSInteger totalAvailableCredits = [self.preferenceHelper getCreditCountForBucket:bucket];
     if (count > totalAvailableCredits) {
         if (callback) {
             callback(false, [NSError errorWithDomain:BNCErrorDomain code:BNCRedeemCreditsError userInfo:@{ NSLocalizedDescriptionKey: @"You're trying to redeem more credits than are available. Have you loaded rewards?" }]);
         }
         else {
-            NSLog(@"[Branch Warning] You're trying to redeem more credits than are available. Have you loaded rewards?");
+            [self.preferenceHelper logWarning:@"You're trying to redeem more credits than are available. Have you loaded rewards?"];
         }
         return;
     }
-
+    
     [self initSessionIfNeededAndNotInProgress];
-
+    
     BranchRedeemRewardsRequest *req = [[BranchRedeemRewardsRequest alloc] initWithAmount:count bucket:bucket callback:callback];
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
@@ -621,7 +633,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (void)getCreditHistoryForBucket:(NSString *)bucket after:(NSString *)creditTransactionId number:(NSInteger)length order:(BranchCreditHistoryOrder)order andCallback:(callbackWithList)callback {
     [self initSessionIfNeededAndNotInProgress];
-
+    
     BranchCreditHistoryRequest *req = [[BranchCreditHistoryRequest alloc] initWithBucket:bucket creditTransactionId:creditTransactionId length:length order:order callback:callback];
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
@@ -645,7 +657,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (NSDictionary *)getFirstReferringParams {
     NSDictionary *origInstallParams = [BNCEncodingUtils decodeJsonStringToDictionary:self.preferenceHelper.installParams];
-
+    
     if (self.deepLinkDebugParams) {
         NSMutableDictionary* debugInstallParams = [[BNCEncodingUtils decodeJsonStringToDictionary:self.preferenceHelper.sessionParams] mutableCopy];
         [debugInstallParams addEntriesFromDictionary:self.deepLinkDebugParams];
@@ -656,7 +668,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (NSDictionary *)getLatestReferringParams {
     NSDictionary *origSessionParams = [BNCEncodingUtils decodeJsonStringToDictionary:self.preferenceHelper.sessionParams];
-
+    
     if (self.deepLinkDebugParams) {
         NSMutableDictionary* debugSessionParams = [origSessionParams mutableCopy];
         [debugSessionParams addEntriesFromDictionary:self.deepLinkDebugParams];
@@ -808,7 +820,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (void)getSpotlightUrlWithParams:(NSDictionary *)params callback:(callbackWithParams)callback {
     [self initSessionIfNeededAndNotInProgress];
-
+    
     BranchSpotlightUrlRequest *req = [[BranchSpotlightUrlRequest alloc] initWithParams:params callback:callback];
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
@@ -961,11 +973,11 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (void)getPromoCodeWithPrefix:(NSString *)prefix amount:(NSInteger)amount expiration:(NSDate *)expiration bucket:(NSString *)bucket usageType:(BranchPromoCodeUsageType)usageType rewardLocation:(BranchPromoCodeRewardLocation)rewardLocation useOld:(BOOL)useOld callback:(callbackWithParams)callback {
     [self initSessionIfNeededAndNotInProgress];
-
+    
     if (!bucket) {
         bucket = @"default";
     }
-
+    
     BranchGetPromoCodeRequest *req = [[BranchGetPromoCodeRequest alloc] initWithUsageType:usageType rewardLocation:rewardLocation amount:amount bucket:bucket prefix:prefix expiration:expiration useOld:useOld callback:callback];
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
@@ -986,9 +998,9 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
         }
         return;
     }
-
+    
     [self initSessionIfNeededAndNotInProgress];
-
+    
     BranchValidatePromoCodeRequest *req = [[BranchValidatePromoCodeRequest alloc] initWithCode:code useOld:useOld callback:callback];
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
@@ -1009,9 +1021,9 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
         }
         return;
     }
-
+    
     [self initSessionIfNeededAndNotInProgress];
-
+    
     BranchApplyPromoCodeRequest *req = [[BranchApplyPromoCodeRequest alloc] initWithCode:code useOld:useOld callback:callback];
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
@@ -1022,20 +1034,20 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 + (Branch *)getInstanceInternal:(NSString *)key returnNilIfNoCurrentInstance:(BOOL)returnNilIfNoCurrentInstance {
     static Branch *branch;
-
+    
     if (!branch && returnNilIfNoCurrentInstance) {
         return nil;
     }
-
+    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         BNCPreferenceHelper *preferenceHelper = [BNCPreferenceHelper preferenceHelper];
-
+        
         // If there was stored key and it isn't the same as the currently used (or doesn't exist), we need to clean up
         // Note: Link Click Identifier is not cleared because of the potential for that to mess up a deep link
         if (preferenceHelper.lastRunBranchKey && ![key isEqualToString:preferenceHelper.lastRunBranchKey]) {
-            NSLog(@"[Branch Warning] The Branch Key has changed, clearing relevant items");
-
+            [preferenceHelper logWarning:@"The Branch Key has changed, clearing relevant items"];
+            
             preferenceHelper.appVersion = nil;
             preferenceHelper.deviceFingerprintID = nil;
             preferenceHelper.sessionID = nil;
@@ -1043,15 +1055,15 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
             preferenceHelper.userUrl = nil;
             preferenceHelper.installParams = nil;
             preferenceHelper.sessionParams = nil;
-
+            
             [[BNCServerRequestQueue getInstance] clearQueue];
         }
-
+        
         preferenceHelper.lastRunBranchKey = key;
-
+        
         branch = [[Branch alloc] initWithInterface:[[BNCServerInterface alloc] init] queue:[BNCServerRequestQueue getInstance] cache:[[BNCLinkCache alloc] init] preferenceHelper:preferenceHelper key:key];
     });
-
+    
     return branch;
 }
 
@@ -1060,16 +1072,16 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (void)generateShortUrl:(NSArray *)tags andAlias:(NSString *)alias andType:(BranchLinkType)type andMatchDuration:(NSUInteger)duration andChannel:(NSString *)channel andFeature:(NSString *)feature andStage:(NSString *)stage andParams:(NSDictionary *)params andCallback:(callbackWithUrl)callback {
     [self initSessionIfNeededAndNotInProgress];
-
+    
     BNCLinkData *linkData = [self prepareLinkDataFor:tags andAlias:alias andType:type andMatchDuration:duration andChannel:channel andFeature:feature andStage:stage andParams:params ignoreUAString:nil];
-
+    
     if ([self.linkCache objectForKey:linkData]) {
         if (callback) {
             callback([self.linkCache objectForKey:linkData], nil);
         }
         return;
     }
-
+    
     BranchShortUrlRequest *req = [[BranchShortUrlRequest alloc] initWithTags:tags alias:alias type:type matchDuration:duration channel:channel feature:feature stage:stage params:params linkData:linkData linkCache:self.linkCache callback:callback];
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
@@ -1077,21 +1089,21 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (NSString *)generateShortUrl:(NSArray *)tags andAlias:(NSString *)alias andType:(BranchLinkType)type andMatchDuration:(NSUInteger)duration andChannel:(NSString *)channel andFeature:(NSString *)feature andStage:(NSString *)stage andParams:(NSDictionary *)params ignoreUAString:(NSString *)ignoreUAString forceLinkCreation:(BOOL)forceLinkCreation {
     NSString *shortURL = nil;
-
+    
     BNCLinkData *linkData = [self prepareLinkDataFor:tags andAlias:alias andType:type andMatchDuration:duration andChannel:channel andFeature:feature andStage:stage andParams:params ignoreUAString:ignoreUAString];
-
+    
     // If an ignore UA string is present, we always get a new url. Otherwise, if we've already seen this request, use the cached version
     if (!ignoreUAString && [self.linkCache objectForKey:linkData]) {
         shortURL = [self.linkCache objectForKey:linkData];
     }
     else {
         BranchShortUrlSyncRequest *req = [[BranchShortUrlSyncRequest alloc] initWithTags:tags alias:alias type:type matchDuration:duration channel:channel feature:feature stage:stage params:params linkData:linkData linkCache:self.linkCache];
-
+        
         if (self.isInitialized) {
             [self.preferenceHelper log:FILE_NAME line:LINE_NUM message:@"Created custom url synchronously"];
             BNCServerResponse *serverResponse = [req makeRequest:self.bServerInterface key:self.branchKey];
             shortURL = [req processResponse:serverResponse];
-
+            
             // cache the link
             if (shortURL) {
                 [self.linkCache setObject:shortURL forKey:linkData];
@@ -1106,52 +1118,52 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
             NSLog(@"Branch SDK Error: making request before init succeeded!");
         }
     }
-
+    
     return shortURL;
 }
 
 - (NSString *)generateLongURLWithParams:(NSDictionary *)params andChannel:(NSString *)channel andTags:(NSArray *)tags andFeature:(NSString *)feature andStage:(NSString *)stage andAlias:(NSString *)alias {
     NSString *baseLongUrl = [NSString stringWithFormat:@"%@/a/%@", BNC_LINK_URL, self.branchKey];
-
+    
     return [self longUrlWithBaseUrl:baseLongUrl params:params tags:tags feature:feature channel:nil stage:stage alias:alias duration:0 type:BranchLinkTypeUnlimitedUse];
 }
 
 - (NSString *)longUrlWithBaseUrl:(NSString *)baseUrl params:(NSDictionary *)params tags:(NSArray *)tags feature:(NSString *)feature channel:(NSString *)channel stage:(NSString *)stage alias:(NSString *)alias duration:(NSUInteger)duration type:(BranchLinkType)type {
     NSMutableString *longUrl = [[NSMutableString alloc] initWithFormat:@"%@?", baseUrl];
-
+    
     for (NSString *tag in tags) {
         [longUrl appendFormat:@"tags=%@&", tag];
     }
-
+    
     if ([alias length]) {
         [longUrl appendFormat:@"alias=%@&", alias];
     }
-
+    
     if ([channel length]) {
         [longUrl appendFormat:@"channel=%@&", channel];
     }
-
+    
     if ([feature length]) {
         [longUrl appendFormat:@"feature=%@&", feature];
     }
-
+    
     if ([stage length]) {
         [longUrl appendFormat:@"stage=%@&", stage];
     }
-
+    
     [longUrl appendFormat:@"type=%ld&", (long)type];
     [longUrl appendFormat:@"matchDuration=%ld&", (long)duration];
-
+    
     NSData *jsonData = [BNCEncodingUtils encodeDictionaryToJsonData:params];
     NSString *base64EncodedParams = [BNCEncodingUtils base64EncodeData:jsonData];
     [longUrl appendFormat:@"source=ios&data=%@", base64EncodedParams];
-
+    
     return longUrl;
 }
 
 - (BNCLinkData *)prepareLinkDataFor:(NSArray *)tags andAlias:(NSString *)alias andType:(BranchLinkType)type andMatchDuration:(NSUInteger)duration andChannel:(NSString *)channel andFeature:(NSString *)feature andStage:(NSString *)stage andParams:(NSDictionary *)params ignoreUAString:(NSString *)ignoreUAString {
     BNCLinkData *post = [[BNCLinkData alloc] init];
-
+    
     [post setupType:type];
     [post setupTags:tags];
     [post setupChannel:channel];
@@ -1161,7 +1173,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
     [post setupMatchDuration:duration];
     [post setupIgnoreUAString:ignoreUAString];
     [post setupParams:params];
-
+    
     return post;
 }
 
@@ -1170,7 +1182,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (void)registerViewWithParams:(NSDictionary *)params andCallback:(callbackWithParams)callback {
     [self initSessionIfNeededAndNotInProgress];
-
+    
     BranchRegisterViewRequest *req = [[BranchRegisterViewRequest alloc] initWithParams:params andCallback:callback];
     [self.requestQueue enqueue:req];
     [self processNextQueueItem];
@@ -1189,7 +1201,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
     [self clearTimer];
     self.sessionTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(callClose) userInfo:nil repeats:NO];
     [self.requestQueue persistImmediately];
-
+    
     if (self.debugGestureRecognizer) {
         [[UIApplication sharedApplication].keyWindow removeGestureRecognizer:self.debugGestureRecognizer];
     }
@@ -1202,12 +1214,12 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 - (void)callClose {
     if (self.isInitialized) {
         self.isInitialized = NO;
-
+        
         if (self.preferenceHelper.sessionID && ![self.requestQueue containsClose]) {
             BranchCloseRequest *req = [[BranchCloseRequest alloc] init];
             [self.requestQueue enqueue:req];
         }
-
+        
         [self processNextQueueItem];
     }
 }
@@ -1226,19 +1238,19 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (void)processNextQueueItem {
     dispatch_semaphore_wait(self.processing_sema, DISPATCH_TIME_FOREVER);
-
+    
     if (self.networkCount == 0 && self.requestQueue.size > 0) {
         self.networkCount = 1;
         dispatch_semaphore_signal(self.processing_sema);
-
+        
         BNCServerRequest *req = [self.requestQueue peek];
-
+        
         if (req) {
             BNCServerCallback callback = ^(BNCServerResponse *response, NSError *error) {
                 // If the request was successful, or was a bad user request, continue processing.
                 if (!error || error.code == BNCBadRequestError || error.code == BNCDuplicateResourceError) {
                     [req processResponse:response error:error];
-
+                    
                     [self.requestQueue dequeue];
                     self.networkCount = 0;
                     [self processNextQueueItem];
@@ -1250,7 +1262,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
                     for (int i = 0; i < self.requestQueue.size; i++) {
                         [requestsToFail addObject:[self.requestQueue peekAt:i]];
                     }
-
+                    
                     // Next, remove all the requests that should not be replayed. Note, we do this before calling callbacks, in case any
                     // of the callbacks try to kick off another request, which could potentially start another request (and call these callbacks again)
                     for (BNCServerRequest *request in requestsToFail) {
@@ -1258,17 +1270,17 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
                             [self.requestQueue remove:request];
                         }
                     }
-
+                    
                     // Then, set the network count to zero, indicating that requests can be started again
                     self.networkCount = 0;
-
+                    
                     // Finally, call all the requests callbacks with the error
                     for (BNCServerRequest *request in requestsToFail) {
                         [request processResponse:nil error:error];
                     }
                 }
             };
-
+            
             if (![req isKindOfClass:[BranchInstallRequest class]] && !self.preferenceHelper.identityID) {
                 NSLog(@"[Branch Error] User session has not been initialized!");
                 [req processResponse:nil error:[NSError errorWithDomain:BNCErrorDomain code:BNCInitError userInfo:@{ NSLocalizedDescriptionKey: @"Branch User Session has not been initialized" }]];
@@ -1279,11 +1291,11 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
                 [req processResponse:nil error:[NSError errorWithDomain:BNCErrorDomain code:BNCInitError userInfo:@{ NSLocalizedDescriptionKey: @"Branch User Session has not been initialized" }]];
                 return;
             }
-
+            
             if (![req isKindOfClass:[BranchCloseRequest class]]) {
                 [self clearTimer];
             }
-
+            
             [req makeRequest:self.bServerInterface key:self.branchKey callback:callback];
         }
     }
@@ -1303,7 +1315,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (void)initUserSessionAndCallCallback:(BOOL)callCallback {
     self.shouldCallSessionInitCallback = callCallback;
-
+    
     // If the session is not yet initialized
     if (!self.isInitialized) {
         [self initializeSession];
@@ -1321,13 +1333,13 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (void)initializeSession {
     if (!self.branchKey) {
-        NSLog(@"[Branch Warning] Please enter your branch_key in the plist!");
+        [self.preferenceHelper logWarning:@"Please enter your branch_key in the plist!"];
         return;
     }
     else if ([self.branchKey rangeOfString:@"key_test_"].location != NSNotFound) {
-        NSLog(@"[Branch Warning] You are using your test app's Branch Key. Remember to change it to live Branch Key for deployment.");
+        [self.preferenceHelper logWarning:@"You are using your test app's Branch Key. Remember to change it to live Branch Key for deployment."];
     }
-
+    
     if (!self.preferenceHelper.identityID) {
         [self registerInstallOrOpen:[BranchInstallRequest class]];
     }
@@ -1345,15 +1357,15 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
             [self handleInitSuccess];
         }
     };
-
+    
     if ([BNCSystemObserver getOSVersion].integerValue >= 9 && self.useCookieBasedMatching) {
         [[BNCStrongMatchHelper strongMatchHelper] createStrongMatchWithBranchKey:self.branchKey];
     }
-
+    
     // If there isn't already an Open / Install request, add one to the queue
     if (![self.requestQueue containsInstallOrOpen]) {
         BranchOpenRequest *req = [[clazz alloc] initWithCallback:initSessionCallback];
-
+        
         [self insertRequestAtFront:req];
     }
     // If there is already one in the queue, make sure it's in the front.
@@ -1363,13 +1375,13 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
         BranchOpenRequest *req = [self.requestQueue moveInstallOrOpenToFront:self.networkCount];
         req.callback = initSessionCallback;
     }
-
+    
     [self processNextQueueItem];
 }
 
 - (void)handleInitSuccess {
     self.isInitialized = YES;
-
+    
     NSDictionary *latestReferringParams = [self getLatestReferringParams];
     if (self.shouldCallSessionInitCallback) {
         if (self.sessionInitWithParamsCallback) {
@@ -1379,14 +1391,14 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
             self.sessionInitWithBranchUniversalObjectCallback([self getLatestReferringBranchUniversalObject], [self getLatestReferringBranchLinkProperties], nil);
         }
     }
-
+    
     if (self.shouldAutomaticallyDeepLink) {
         // Find any matched keys, then launch any controllers that match
         // TODO which one to launch if more than one match?
         NSMutableSet *keysInParams = [NSMutableSet setWithArray:[latestReferringParams allKeys]];
         NSSet *desiredKeysSet = [NSSet setWithArray:[self.deepLinkControllers allKeys]];
         [keysInParams intersectSet:desiredKeysSet];
-
+        
         // If we find a matching key, configure and show the controller
         if ([keysInParams count]) {
             NSString *key = [[keysInParams allObjects] firstObject];
@@ -1399,7 +1411,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
             }
             branchSharingController.deepLinkingCompletionDelegate = self;
             self.deepLinkPresentingController = [[[UIApplication sharedApplication].delegate window] rootViewController];
-
+            
             if ([self.deepLinkPresentingController presentedViewController]) {
                 [self.deepLinkPresentingController dismissViewControllerAnimated:NO completion:^{
                     [self.deepLinkPresentingController presentViewController:branchSharingController animated:YES completion:NULL];
@@ -1414,7 +1426,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
 
 - (void)handleInitFailure:(NSError *)error {
     self.isInitialized = NO;
-
+    
     if (self.shouldCallSessionInitCallback) {
         if (self.sessionInitWithParamsCallback) {
             self.sessionInitWithParamsCallback(nil, error);
@@ -1436,5 +1448,14 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
     [self.deepLinkPresentingController dismissViewControllerAnimated:YES completion:NULL];
 }
 
+#pragma mark FABKit methods
+
++ (NSString *)bundleIdentifier {
+    return @"io.branch.sdk.ios";
+}
+
++ (NSString *)kitDisplayVersion {
+    return @"0.12.0";
+}
 
 @end

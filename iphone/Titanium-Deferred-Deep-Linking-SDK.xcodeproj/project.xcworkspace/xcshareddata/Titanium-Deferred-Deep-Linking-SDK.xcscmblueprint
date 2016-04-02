@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "FCE26EE99C32189D23633F320DDF00D37641003B",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "1929DBD069E43FB109A10D27981BC0AD82070E33" : 0,
+    "FCE26EE99C32189D23633F320DDF00D37641003B" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "8CD2D63E-E1B8-4C7B-9458-F98C5A8683C3",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "1929DBD069E43FB109A10D27981BC0AD82070E33" : "iOS-Deferred-Deep-Linking-SDK\/",
+    "FCE26EE99C32189D23633F320DDF00D37641003B" : "Titanium-Deferred-Deep-Linking-SDK\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Titanium-Deferred-Deep-Linking-SDK",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "iphone\/Titanium-Deferred-Deep-Linking-SDK.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/BranchMetrics\/iOS-Deferred-Deep-Linking-SDK.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1929DBD069E43FB109A10D27981BC0AD82070E33"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/BranchMetrics\/Titanium-Deferred-Deep-Linking-SDK.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "FCE26EE99C32189D23633F320DDF00D37641003B"
+    }
+  ]
+}

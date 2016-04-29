@@ -22,7 +22,6 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 
     // if handleDeepLink returns YES, and you registered a callback in initSessionAndRegisterDeepLinkHandler, the callback will be called with the data associated with the deep link
     if (![[Branch getInstance] handleDeepLink:url]) {
-
         // a little strange, looks recursive but we switch the implementations of this current method with the original implementation in the startup method
         return applicationOpenURLSourceApplication(self, _cmd, application, url, sourceApplication, annotation);
     }
@@ -34,6 +33,10 @@ bool applicationContinueUserActivity(id self, SEL _cmd, UIApplication* applicati
     NSLog(@"[INFO] applicationContinueUserActivity");
 
     BOOL handledByBranch = [[Branch getInstance] continueUserActivity:userActivity];
+    if (!handledByBranch) {
+        // a little strange, looks recursive but we switch the implementations of this current method with the original implementation in the startup method
+        return applicationContinueUserActivity(self, _cmd, application, userActivity, restorationHandler);
+    }
 
     return handledByBranch;
 }

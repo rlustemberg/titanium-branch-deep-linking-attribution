@@ -112,8 +112,6 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 
     if (modDelegate == nil) {
         modDelegate = objc_allocateClassPair(objectClass, [newClassName UTF8String], 0);
-        
-        NSLog(@"[INFO] begin switch methods for application:openURL:sourceApplication:annotation:");
 
         // original delegate's selectors
         SEL selectorToOverride1 = @selector(application:openURL:sourceApplication:annotation:);
@@ -127,9 +125,7 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
         // switch implemention of openURL method
         method_exchangeImplementations(m1, u1);
 
-        NSLog(@"[INFO] begin method swizzling for application:continueUserActivity:restorationHandler:");
         __block IMP implementation = [IoBranchSdkModule swizzleClassWithClassname:NSStringFromClass(objectClass) originalSelector:@selector(application:continueUserActivity:restorationHandler:) block:^BOOL (id blockSelf, UIApplication *application, NSUserActivity *userActivity, id restorationHandler){
-            NSLog(@"[INFO] swizzleContinueUserActivity block");
             BOOL result = [[Branch getInstance] continueUserActivity:userActivity];
             
             if (!result && implementation) {

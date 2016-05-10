@@ -30,6 +30,6 @@ npm-debug.log
 tmp
 .map
 Thumbs.db
-testbed/i18n/alloy_generated
-testbed/platform/ios/alloy_generated
+testbed/platform
+testbed/i18n
 *.*-e

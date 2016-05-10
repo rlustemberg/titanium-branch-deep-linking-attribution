@@ -3,6 +3,9 @@
  *
  * Created by Branch Metrics
  * Copyright (c) 2015 Your Company. All rights reserved.
+ *
+ * Special thanks to hokolinks for their method swizzling code.
+ * https://github.com/hokolinks/hoko-ios/blob/master/Hoko/HOKSwizzling.m
  */
 
 #import "IoBranchSdkModule.h"
@@ -22,7 +25,6 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 
     // if handleDeepLink returns YES, and you registered a callback in initSessionAndRegisterDeepLinkHandler, the callback will be called with the data associated with the deep link
     if (![[Branch getInstance] handleDeepLink:url]) {
-
         // a little strange, looks recursive but we switch the implementations of this current method with the original implementation in the startup method
         return applicationOpenURLSourceApplication(self, _cmd, application, url, sourceApplication, annotation);
     }
@@ -30,17 +32,53 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
     return YES;
 }
 
-bool applicationContinueUserActivity(id self, SEL _cmd, UIApplication* application, NSUserActivity* userActivity, id restorationHandler) {
-    NSLog(@"[INFO] applicationContinueUserActivity");
-
-    BOOL handledByBranch = [[Branch getInstance] continueUserActivity:userActivity];
-
-    return handledByBranch;
-}
-
 @end
 
 @implementation IoBranchSdkModule
+
+#pragma mark - Swizzling Methods
+
+// Swizzles a class' selector with another selector
++ (void)swizzleClassname:(NSString *)classname
+        originalSelector:(SEL)originalSelector
+        swizzledSelector:(SEL)swizzledSelector {
+    
+    Class class = NSClassFromString(classname);
+    
+    Method originalMethod = class_getInstanceMethod(class, originalSelector);
+    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+    
+    BOOL didAddMethod = class_addMethod(class,
+                                        originalSelector,
+                                        method_getImplementation(swizzledMethod),
+                                        method_getTypeEncoding(swizzledMethod));
+    
+    if (didAddMethod) {
+        class_replaceMethod(class,
+                            swizzledSelector,
+                            method_getImplementation(originalMethod),
+                            method_getTypeEncoding(originalMethod));
+    } else {
+        method_exchangeImplementations(originalMethod, swizzledMethod);
+    }
+}
+
+// Swizzles a selector with a block.
++ (IMP)swizzleClassWithClassname:(NSString *)classname
+                originalSelector:(SEL)originalSelector
+                           block:(id)block {
+    
+    IMP newImplementation = imp_implementationWithBlock(block);
+    Class class = NSClassFromString(classname);
+    Method method = class_getInstanceMethod(class, originalSelector);
+    
+    if (method == nil) {
+        class_addMethod(class, originalSelector, newImplementation, "");
+        return nil;
+    } else {
+        return class_replaceMethod(class, originalSelector, newImplementation, method_getTypeEncoding(method));
+    }
+}
 
 #pragma mark Internal
 
@@ -77,10 +115,8 @@ bool applicationContinueUserActivity(id self, SEL _cmd, UIApplication* applicati
 
         // original delegate's selectors
         SEL selectorToOverride1 = @selector(application:openURL:sourceApplication:annotation:);
-        SEL selectorToOverride2 = @selector(application:continueUserActivity:restorationHandler:);
 
         Method m1 = class_getInstanceMethod(objectClass, selectorToOverride1);
-        Method m2 = class_getInstanceMethod(objectClass, selectorToOverride2);
 
         // our method to switch implementation with the original delegate's
         SEL selectorToUse1 = @selector(applicationOpenURLSourceApplication:);
@@ -89,8 +125,16 @@ bool applicationContinueUserActivity(id self, SEL _cmd, UIApplication* applicati
         // switch implemention of openURL method
         method_exchangeImplementations(m1, u1);
 
-        // replace implementation of continueUserActivity method
-        class_addMethod(modDelegate, selectorToOverride2, (IMP)applicationContinueUserActivity, method_getTypeEncoding(m2));
+        __block IMP implementation = [IoBranchSdkModule swizzleClassWithClassname:NSStringFromClass(objectClass) originalSelector:@selector(application:continueUserActivity:restorationHandler:) block:^BOOL (id blockSelf, UIApplication *application, NSUserActivity *userActivity, id restorationHandler){
+            BOOL result = [[Branch getInstance] continueUserActivity:userActivity];
+            
+            if (!result && implementation) {
+                BOOL (*func)() = (void *)implementation;
+                return func(blockSelf, @selector(application:continueUserActivity:restorationHandler:), application, userActivity, restorationHandler);
+            }
+            
+            return NO;
+        }];
 
         objc_registerClassPair(modDelegate);
     }

@@ -151,6 +151,7 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 	[super shutdown:sender];
 }
 
+
 #pragma mark Internal Memory Management
 
 - (void)didReceiveMemoryWarning:(NSNotification*)notification
@@ -159,6 +160,7 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 	// reloaded once memory is available - such as caches
 	[super didReceiveMemoryWarning:notification];
 }
+
 
 #pragma mark Listener Notifications
 
@@ -180,6 +182,7 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 		// since no body is listening at this point for that event
 	}
 }
+
 
 #pragma mark - Test Methods
 
@@ -315,6 +318,7 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 
 
 #pragma mark - retrieve session/install params
+
 - (NSDictionary *)getLatestReferringParams:(id)args
 {
     ENSURE_ARG_COUNT(args, 0);
@@ -535,6 +539,7 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
         }
     }];
 }
+
 
 #pragma mark - logout
 

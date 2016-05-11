@@ -7,6 +7,6 @@
 	<classpathentry kind="lib" path="/Users/lysis/Library/Application Support/Titanium/mobilesdk/osx/5.0.2.GA/android/titanium.jar"/>
 	<classpathentry kind="lib" path="/Users/lysis/Library/Application Support/Titanium/mobilesdk/osx/5.0.2.GA/android/kroll-common.jar"/>
 	<classpathentry kind="lib" path="/Users/lysis/Library/Application Support/Titanium/mobilesdk/osx/5.0.2.GA/android/kroll-apt.jar"/>
-    <classpathentry kind="lib" path="android/lib/Branch-1.10.1.jar"/>
+    <classpathentry kind="lib" path="android/lib/Branch-1.11.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

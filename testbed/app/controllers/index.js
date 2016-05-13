@@ -1,66 +1,5 @@
 var branch = require('io.branch.sdk');
-
-/*
- ************************************************
- * Create custom loading indicator
- ************************************************
- */
-var actInd;
-var indView;
-var indicatorShowing = false;
-
 var USE_ALERT = true; // use alerts to show responses or print them otherwise
-
-function showIndicator(title) {
-    indicatorShowing = true;
-
-    // black view
-    indView = Titanium.UI.createView({
-        height:50,
-        width: 125,
-        backgroundColor: '#000',
-        borderRadius: 10,
-        opacity: 0.7
-    });
-
-    var style;
-
-    if (OS_IOS) {
-        style = Titanium.UI.iPhone.ActivityIndicatorStyle.PLAIN;
-    } else {
-        style = Ti.UI.ActivityIndicatorStyle.DARK;
-    }
-
-    actInd = Titanium.UI.createActivityIndicator({
-        style: style,
-        font: {
-            fontFamily: 'Helvetica Neue',
-            fontSize: 15,
-            fontWeight: 'bold'
-        },
-        color: 'white',
-        message: title,
-        width: 210
-    });
-
-    indView.add(actInd);
-    $.window.add(indView);
-
-    actInd.show();
-}
-
-function hideIndicator() {
-    if(indicatorShowing == true) {
-        if (actInd) {
-            actInd.hide();
-        }
-        if(indView != null) {
-            $.window.remove(indView);
-            indView = null
-        }
-        indicatorShowing = false;
-    }
-}
 
 /*
  ************************************************
@@ -76,7 +15,6 @@ $.initialize = function(params) {
     Ti.API.info("start initSession");
     branch.setDebug();
     branch.initSession();
-    // Ti.App.fireEvent("show_indicator");
 };
 
 $.initializeViews = function() {
@@ -103,10 +41,9 @@ $.initializeHandlers = function() {
         });
 
         Ti.Android.currentActivity.addEventListener("newintent", function(e) {
-            Ti.API.info("inside newintent: " + e);
+            Ti.API.info("inside newintent: " + JSON.stringify(e.intent.data));
             $.window.open();
-            branch.initSession();
-            // Ti.App.fireEvent("show_indicator");
+            branch.initSessionWithData(e.intent.data);
         });
     }
 
@@ -124,20 +61,6 @@ $.initializeHandlers = function() {
     branch.addEventListener("bio:loadRewards", $.onLoadRewardFinished);
     branch.addEventListener("bio:getCreditHistory", $.onGetCreditHistoryFinished);
     branch.addEventListener("bio:redeemRewards", $.onRedeemRewardFinished);
-
-    // Add global event handlers to hide/show custom indicator
-    Titanium.App.addEventListener('show_indicator', function(e) {
-        if(e.title == null) {
-            e.title = 'Loading... ';
-        }
-        if(indicatorShowing == true) {
-            hideIndicator();
-        }
-        showIndicator(e.title);
-    });
-    Titanium.App.addEventListener('hide_indicator', function(e) {
-        hideIndicator();
-    });
 };
 
 /*
@@ -148,7 +71,6 @@ $.initializeHandlers = function() {
 $.onInitSessionFinished = function(data) {
     Ti.API.info("inside onInitSessionFinished");
     showData(data);
-    // Ti.App.fireEvent("hide_indicator");
 }
 
 $.onGetSessionButtonClicked = function() {

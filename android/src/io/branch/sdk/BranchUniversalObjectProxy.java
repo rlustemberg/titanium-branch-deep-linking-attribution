@@ -32,17 +32,13 @@ import org.appcelerator.titanium.util.Log;
 import org.appcelerator.titanium.util.TiConfig;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.util.TiRHelper;
-import org.appcelerator.titanium.proxy.TiViewProxy;
-import org.appcelerator.titanium.view.TiCompositeLayout;
-import org.appcelerator.titanium.view.TiCompositeLayout.LayoutArrangement;
-import org.appcelerator.titanium.view.TiUIView;
 
 import org.json.JSONObject;
 
 
 // This proxy can be created by calling TitaniumDeferredDeepLinkingSDK.createBranchUniversalObject({key: object, ...})
 @Kroll.proxy(creatableInModule=TitaniumDeferredDeepLinkingSDKModule.class)
-public class BranchUniversalObjectProxy extends TiViewProxy
+public class BranchUniversalObjectProxy extends KrollProxy
 {
 	// Standard Debugging variables
 	private static final String LCAT = "BranchUniversalObjectProxy";
@@ -50,36 +46,6 @@ public class BranchUniversalObjectProxy extends TiViewProxy
 
 	private final BranchUniversalObject branchUniversalObject = new BranchUniversalObject();
 	private final LinkProperties linkProperties = new LinkProperties();
-
-	private class BranchUniversalObjectView extends TiUIView
-	{
-		public BranchUniversalObjectView(TiViewProxy proxy) {
-			super(proxy);
-			LayoutArrangement arrangement = LayoutArrangement.DEFAULT;
-
-			if (proxy.hasProperty(TiC.PROPERTY_LAYOUT)) {
-				String layoutProperty = TiConvert.toString(proxy.getProperty(TiC.PROPERTY_LAYOUT));
-				if (layoutProperty.equals(TiC.LAYOUT_HORIZONTAL)) {
-					arrangement = LayoutArrangement.HORIZONTAL;
-				} else if (layoutProperty.equals(TiC.LAYOUT_VERTICAL)) {
-					arrangement = LayoutArrangement.VERTICAL;
-				}
-			}
-			setNativeView(new TiCompositeLayout(proxy.getActivity(), arrangement));
-		}
-
-		@Override
-		public void processProperties(KrollDict d)
-		{
-			super.processProperties(d);
-		}
-	}
-
-	// Constructor
-	public BranchUniversalObjectProxy()
-	{
-		super();
-	}
 
 	// Test methods
 	@Kroll.method
@@ -98,15 +64,6 @@ public class BranchUniversalObjectProxy extends TiViewProxy
 	public void setMessage(String message)
 	{
 	    Log.d(LCAT, "Tried setting module message to: " + message);
-	}
-
-	@Override
-	public TiUIView createView(Activity activity)
-	{
-		TiUIView view = new BranchUniversalObjectView(this);
-		view.getLayoutParams().autoFillsHeight = true;
-		view.getLayoutParams().autoFillsWidth = true;
-		return view;
 	}
 
 	// Handle creation options

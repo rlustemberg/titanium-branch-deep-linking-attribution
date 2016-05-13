@@ -1,67 +1,7 @@
 var branch = require('io.branch.sdk');
 var branchUniversalObjectProxy;
 
-/*
- ************************************************
- * Create custom loading indicator
- ************************************************
- */
-var actInd;
-var indView;
-var indicatorShowing = false;
-
 var USE_ALERT = true; // use alerts to show responses or print them otherwise
-
-function showIndicator(title) {
-    indicatorShowing = true;
-
-    // black view
-    indView = Titanium.UI.createView({
-        height:50,
-        width: 125,
-        backgroundColor: '#000',
-        borderRadius: 10,
-        opacity: 0.7
-    });
-
-    var style;
-
-    if (OS_IOS) {
-        style = Titanium.UI.iPhone.ActivityIndicatorStyle.PLAIN;
-    } else {
-        style = Ti.UI.ActivityIndicatorStyle.DARK;
-    }
-
-    actInd = Titanium.UI.createActivityIndicator({
-        style: style,
-        font: {
-            fontFamily: 'Helvetica Neue',
-            fontSize: 15,
-            fontWeight: 'bold'
-        },
-        color: 'white',
-        message: title,
-        width: 210
-    });
-
-    indView.add(actInd);
-    $.window.add(indView);
-
-    actInd.show();
-}
-
-function hideIndicator() {
-    if(indicatorShowing == true) {
-        if (actInd) {
-            actInd.hide();
-        }
-        if(indView != null) {
-            $.window.remove(indView);
-            indView = null
-        }
-        indicatorShowing = false;
-    }
-}
 
 /*
  ************************************************
@@ -87,21 +27,6 @@ $.initializeHandlers = function() {
     $.generateUrlButton.addEventListener('click', $.onGenerateUrlButtonClicked);
     $.shareSheetButton.addEventListener('click', $.onShareSheetButtonClicked);
     $.copyButton.addEventListener('click', $.onCopyButtonClicked);
-
-    // Add global event handlers to hide/show custom indicator
-    Titanium.App.addEventListener('show_indicator', function(e) {
-        if(e.title == null) {
-            e.title = 'Loading... ';
-        }
-        if(indicatorShowing == true) {
-            hideIndicator();
-        }
-        showIndicator(e.title);
-    });
-
-    Titanium.App.addEventListener('hide_indicator', function(e) {
-        hideIndicator();
-    });
 };
 
 /*

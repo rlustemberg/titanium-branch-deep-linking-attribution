@@ -10,6 +10,7 @@
 package io.branch.sdk;
 
 import android.app.Activity;
+import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -84,6 +85,17 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 		final Branch instance = Branch.getAutoInstance(TiApplication.getInstance());
 
 		instance.initSession(new SessionListener(), activity.getIntent().getData(), activity);
+	}
+
+	@Kroll.method
+	public void initSessionWithData(String data)
+	{
+		Log.d(LCAT, "start init");
+		Uri uri = Uri.parse(data);
+		final Activity activity = this.getActivity();
+		final Branch instance = Branch.getAutoInstance(TiApplication.getInstance());
+
+		instance.initSession(new SessionListener(), uri, activity);
 	}
 
 	@Kroll.method

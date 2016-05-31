@@ -552,6 +552,36 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 }
 
 
+#pragma mark - additional methods
+
+- (NSDictionary *)getCredits:(id)args
+{
+    ENSURE_ARG_COUNT(args, 0);
+    
+    Branch *branch = [self getInstance];
+    NSInteger credits = [branch getCredits];
+    NSNumber *creditsAsObject = [NSNumber numberWithInteger:credits];
+    NSDictionary *response = [NSDictionary dictionaryWithObjectsAndKeys:@"default", @"bucket", creditsAsObject, @"credits", nil];
+    
+    return response;
+}
+
+- (NSDictionary *)getCreditsForBucket:(id)args
+{
+    ENSURE_ARG_COUNT(args, 1);
+    
+    ENSURE_TYPE([args objectAtIndex:0], NSString);
+    NSString *bucket = [args objectAtIndex:0];
+    
+    Branch *branch = [self getInstance];
+    NSInteger credits = [branch getCreditsForBucket:bucket];
+    NSNumber *creditsAsObject = [NSNumber numberWithInteger:credits];
+    NSDictionary *response = [NSDictionary dictionaryWithObjectsAndKeys:bucket, @"bucket", creditsAsObject, @"credits", nil];
+    
+    return response;
+}
+
+
 #pragma mark - custom events
 
 - (void)userCompletedAction:(id)args

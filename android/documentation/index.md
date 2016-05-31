@@ -2,7 +2,7 @@
 
 ## Description
 
-TODO: Enter your module description here
+Titanium Module for BranchSDK
 
 ## Accessing the Titanium-Deferred-Deep-Linking-SDK Module
 
@@ -14,16 +14,7 @@ The titanium_deferred_deep_linking_sdk variable is a reference to the Module obj
 
 ## Reference
 
-TODO: If your module has an API, you should document
-the reference here.
-
-### titanium_deferred_deep_linking_sdk.function
-
-TODO: This is an example of a module function.
-
-### titanium_deferred_deep_linking_sdk.property
-
-TODO: This is an example of a module property.
+For API reference, see README.txt found in the root directory of this repository.
 
 ## Usage
 
@@ -31,9 +22,8 @@ TODO: Enter your usage example here
 
 ## Author
 
-TODO: Enter your author name, email and other contact
-details you want to share here.
+Branch Metrics Ltd.
 
 ## License
 
-TODO: Enter your license/legal information here.
+MIT License (https://github.com/BranchMetrics/android-branch-deep-linking/blob/master/License.txt)

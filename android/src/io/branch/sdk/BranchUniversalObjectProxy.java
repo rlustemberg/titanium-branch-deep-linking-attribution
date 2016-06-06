@@ -20,6 +20,8 @@ import io.branch.referral.SharingHelper;
 import io.branch.referral.util.LinkProperties;
 import io.branch.referral.util.ShareSheetStyle;
 
+import java.lang.Runnable;
+import java.lang.Thread;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -208,16 +210,20 @@ public class BranchUniversalObjectProxy extends KrollProxy
 			body = controlParams.getString("$email_body");
 		}
 
-		ShareSheetStyle shareSheetStyle = new ShareSheetStyle(activity, subject, body)
+		final ShareSheetStyle shareSheetStyle = new ShareSheetStyle(activity, subject, body)
                 .setCopyUrlStyle(activity.getResources().getDrawable(android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
                 .setMoreOptionStyle(activity.getResources().getDrawable(android.R.drawable.ic_menu_search), "Show more")
                 .addPreferredSharingOption(SharingHelper.SHARE_WITH.FACEBOOK)
                 .addPreferredSharingOption(SharingHelper.SHARE_WITH.TWITTER)
                 .addPreferredSharingOption(SharingHelper.SHARE_WITH.EMAIL);
 
-        LinkProperties linkProperties = createLinkPropertiesDict(options, controlParams);
+        final LinkProperties linkProperties = createLinkPropertiesDict(options, controlParams);
 
-		branchUniversalObject.showShareSheet(activity, linkProperties, shareSheetStyle, new ShowShareSheetListener());
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                branchUniversalObject.showShareSheet(activity, linkProperties, shareSheetStyle, new ShowShareSheetListener());
+            }
+        });
 	}
 
 	//-----------  Property Getter/Setter ----------//

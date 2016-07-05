@@ -50,11 +50,12 @@ $.onInitBranchButtonClicked = function() {
 
     // Branch Universal Object Listeners
     branchUniversalObjectProxy.addEventListener("bio:generateShortUrl", $.onGenerateUrlFinished);
+    branchUniversalObjectProxy.addEventListener("bio:shareChannelSelected", $.onShareChannelSelected);
+    
     if (OS_ANDROID) {
         branchUniversalObjectProxy.addEventListener("bio:shareLinkDialogLaunched", $.onShareLinkDialogLaunched);
         branchUniversalObjectProxy.addEventListener("bio:shareLinkDialogDismissed", $.onShareLinkDialogDismissed);
         branchUniversalObjectProxy.addEventListener("bio:shareLinkResponse", $.onShareLinkResponse);
-        branchUniversalObjectProxy.addEventListener("bio:shareChannelSelected", $.onShareChannelSelected);
     }
 
     $.toggleButtons(true);

@@ -209,28 +209,32 @@
 
     UIActivityItemProvider *itemProvider = [self.branchUniversalObj getBranchActivityItemWithLinkProperties:linkProperties];
 
+    NSMutableArray *items = [NSMutableArray arrayWithObject:itemProvider];
+
+    if (shareText) {
+        [items addObject:shareText];
+    }
+
+    if (linkProperties.controlParams[@"$email_body"]) {
+        [items addObject:linkProperties.controlParams[@"$email_body"]];
+    }
+
+    UIActivityViewController *shareViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+
+    if (linkProperties.controlParams[@"$email_subject"]) {
+        @try {
+            [shareViewController setValue:linkProperties.controlParams[@"$email_subject"] forKey:@"subject"];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"[Branch warning] Unable to setValue 'emailSubject' forKey 'subject' on UIActivityViewController.");
+        }
+    }
+    
+    [shareViewController setCompletionWithItemsHandler: ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+        [self fireEvent:@"bio:shareChannelSelected" withObject:@{@"channelName":activityType}];
+    }];
+
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSMutableArray *items = [NSMutableArray arrayWithObject:itemProvider];
-
-        if (shareText) {
-            [items addObject:shareText];
-        }
-
-        if (linkProperties.controlParams[@"$email_body"]) {
-            [items addObject:linkProperties.controlParams[@"$email_body"]];
-        }
-
-        UIActivityViewController *shareViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
-
-        if (linkProperties.controlParams[@"$email_subject"]) {
-            @try {
-                [shareViewController setValue:linkProperties.controlParams[@"$email_subject"] forKey:@"subject"];
-            }
-            @catch (NSException *exception) {
-                NSLog(@"[Branch warning] Unable to setValue 'emailSubject' forKey 'subject' on UIActivityViewController.");
-            }
-        }
-
         [[TiApp app] showModalController:shareViewController animated:YES];
     });
 }

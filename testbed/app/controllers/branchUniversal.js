@@ -50,11 +50,12 @@ $.onInitBranchButtonClicked = function() {
 
     // Branch Universal Object Listeners
     branchUniversalObjectProxy.addEventListener("bio:generateShortUrl", $.onGenerateUrlFinished);
+    branchUniversalObjectProxy.addEventListener("bio:shareChannelSelected", $.onShareChannelSelected);
+    
     if (OS_ANDROID) {
         branchUniversalObjectProxy.addEventListener("bio:shareLinkDialogLaunched", $.onShareLinkDialogLaunched);
         branchUniversalObjectProxy.addEventListener("bio:shareLinkDialogDismissed", $.onShareLinkDialogDismissed);
         branchUniversalObjectProxy.addEventListener("bio:shareLinkResponse", $.onShareLinkResponse);
-        branchUniversalObjectProxy.addEventListener("bio:shareChannelSelected", $.onShareChannelSelected);
     }
 
     $.toggleButtons(true);
@@ -93,6 +94,7 @@ $.onShareSheetButtonClicked = function() {
         "channel" : "share-channel",
         "stage" : "share-stage",
         "duration" : 1,
+         "tags":["nl"]
     }, {
         "$desktop_url" : "http://desktop_url.com",
         "$email_subject" : "This is a sample subject",

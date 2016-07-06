@@ -331,7 +331,7 @@ public class BranchUniversalObjectProxy extends KrollProxy
 		}
 
 		if (options.containsKey("tags")) {
-			ArrayList<String> tags = (ArrayList<String>) options.get("tags");
+			String[] tags = options.getStringArray("tags");
 			for (String tag : tags) {
 				 linkProperties.addTag(tag);
 			}

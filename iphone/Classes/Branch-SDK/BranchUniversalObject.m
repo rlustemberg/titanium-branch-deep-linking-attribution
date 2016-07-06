@@ -117,7 +117,7 @@
         return nil;
     }
     // keep this operation outside of sync operation below.
-    NSString *UAString = [[[UIWebView alloc] init] stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+    // NSString *UAString = [[[UIWebView alloc] init] stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
 
     return [[Branch getInstance] getShortURLWithParams:[self getParamsForServerRequestWithAddedLinkProperties:linkProperties]
                                         andTags:linkProperties.tags
@@ -125,7 +125,7 @@
                                      andFeature:linkProperties.feature
                                        andStage:linkProperties.stage
                                        andAlias:linkProperties.alias
-                                 ignoreUAString:UAString
+                                 ignoreUAString:@""
                               forceLinkCreation:YES];
 }
 
@@ -190,7 +190,7 @@
             [_preferenceHelper logWarning:@"Unable to setValue 'emailSubject' forKey 'subject' on UIActivityViewController."];
         }
     }
-    
+
     if (presentingViewController) {
         // Required for iPad/Universal apps on iOS 8+
         if ([presentingViewController respondsToSelector:@selector(popoverPresentationController)]) {
@@ -199,6 +199,7 @@
                 shareViewController.popoverPresentationController.barButtonItem = anchor;
             }
         }
+    
         [presentingViewController presentViewController:shareViewController animated:YES completion:nil];
     }
     else {

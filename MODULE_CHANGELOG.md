@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Branch Titanium SDK will be documented here.
 
+## [v1.1.5] - 2016-07-18
+- **iOS**: fixed generate url network error by implementing deferred promise
+- Updated `generateShortUrl()` useage & parameters
+
 ## [v1.1.4] - 2016-07-05
 - **iOS**: fixed share sheet crash issue
 - **iOS**: implemented listener for `bio:shareChannelSelected`

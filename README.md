@@ -396,7 +396,7 @@ ___
 
 
 
-### generateShortUrl(options, controlParameters)
+### generateShortUrl(options, controlParameters, callback)
 
 Once you've created your `Branch Universal Object`, which is the reference to the content you're interested in, you can then get a link back to it with the mechanism described below.
 
@@ -425,6 +425,8 @@ Once you've created your `Branch Universal Object`, which is the reference to th
 | $blackberry_url | `string` | The URL for Blackberry
 | $windows_phone_url | `string` | The URL for Windows phone
 
+**callback**: `function`, _required_ - the method callback
+
 ##### Usage
 ```js
 branchUniversalObject.generateShortUrl({
@@ -433,12 +435,11 @@ branchUniversalObject.generateShortUrl({
   "stage" : "sample-stage"
 }, {
   "$desktop_url" : "http://desktop-url.com",
+}, function (res) {
+    Ti.API.info('Generated Short URL');
+    Ti.API.info(res);
 });
 ```
-
-##### Callback
-To implement the callback, you must add a listener to the event `bio:generateShortUrl`.
-The event returns a string object containing the generated link.
 
 **Note:** Avoid passing `alias` in iOS. Adding an `alias` key in the `options` parameter will return a Non-Universal link which will not work in iOS 9.2.
 

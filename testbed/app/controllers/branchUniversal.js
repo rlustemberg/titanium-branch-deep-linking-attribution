@@ -78,6 +78,9 @@ $.onGenerateUrlButtonClicked = function() {
         "duration" : 1,
     }, {
         "$desktop_url" : "http://desktop_url.com",
+    }, function (res) {
+        Ti.API.info('Generated Short URL');
+        Ti.API.info(res);
     });
 }
 

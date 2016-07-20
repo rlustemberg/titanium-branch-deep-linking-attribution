@@ -145,6 +145,7 @@
 
     NSDictionary *arg1 = [args objectAtIndex:0];
     NSDictionary *arg2 = [args objectAtIndex:1];
+    KrollCallback *callback = [args objectAtIndex:2];
 
     BranchLinkProperties *props = [[BranchLinkProperties alloc] init];
 
@@ -162,12 +163,15 @@
     }
 
     [self.branchUniversalObj getShortUrlWithLinkProperties:props andCallback:^(NSString *url, NSError *error) {
-        if (!error) {
-            [self fireEvent:@"bio:generateShortUrl" withObject:@{@"generatedLink":url}];
-        }
-        else {
-            [self fireEvent:@"bio:generateShortUrl" withObject:@{@"error":[error localizedDescription]}];
-        }
+        
+        bool success = (error == nil);
+        bool cancelled = NO;
+
+        NSDictionary *propertiesDict = [[NSDictionary alloc] initWithObjectsAndKeys:url, @"generatedLink", [error localizedDescription], @"error", nil];
+        KrollEvent *invocationEvent = [[KrollEvent alloc] initWithCallback:callback eventObject:propertiesDict thisObject:self];
+        
+        [[callback context] enqueue:invocationEvent];
+
     }];
 }
 

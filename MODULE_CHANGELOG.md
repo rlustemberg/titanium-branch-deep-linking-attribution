@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to the Branch Titanium SDK will be documented here.
 
+## [v1.1.6] - 2016-07-26
+- Added callback parameter for `logout()`
+
 ## [v1.1.5] - 2016-07-18
 - **iOS**: fixed generate url network error by implementing deferred promise
 - Updated `generateShortUrl()` useage & parameters

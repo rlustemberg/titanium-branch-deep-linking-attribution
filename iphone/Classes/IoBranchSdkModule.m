@@ -548,7 +548,14 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
     ENSURE_ARG_COUNT(args, 0);
 
     Branch *branch = [self getInstance];
-    [branch logout];
+    
+    [branch logoutWithCallback:^(BOOL changed, NSError *error) {
+        if ( ! error) {
+            [self fireEvent:@"bio:logout" withObject:@{@"result":@"success"}]; 
+        } else {
+            [self fireEvent:@"bio:logout" withObject:@{@"result":@"error", @"message":[error localizedDescription]}];
+        }
+    }];
 }
 
 

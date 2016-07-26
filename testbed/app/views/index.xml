@@ -14,7 +14,8 @@
             <Button class="third-section-btn first-layer small-btn small-btn-first" title="Reward Balance" id="rewardBalanceButton"/>
             <Button class="third-section-btn first-layer small-btn small-btn-second" title="Redeem 5 Rewards" id="redeemRewardButton"/>
             <Button class="third-section-btn first-layer small-btn small-btn-third" title="Credit History" id="creditHistoryButton"/>
-            <Button class="third-section-btn second-layer" title="Branch Universal Object" id="branchUniversalButton"/>
+            <Button class="first-section-btn second-layer menu-left" title="Branch Universal Object" id="branchUniversalButton"/>
+            <Button class="first-section-btn second-layer menu-right" title="Logout" id="logoutButton"/>
         </View>
     </Window>
 </Alloy>

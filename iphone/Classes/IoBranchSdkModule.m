@@ -545,16 +545,17 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 
 - (void)logout:(id)args
 {
-    ENSURE_ARG_COUNT(args, 1);
-
-    KrollCallback* callback = [args objectAtIndex:0];
+    ENSURE_ARG_COUNT(args, 0);
 
     Branch *branch = [self getInstance];
-    [branch logout];
-
-    if(callback){
-        [callback call:nil thisObject:nil];
-    }
+    
+    [branch logoutWithCallback:^(BOOL changed, NSError *error) {
+        if ( ! error) {
+            [self fireEvent:@"bio:logout" withObject:@{@"result":@"success"}]; 
+        } else {
+            [self fireEvent:@"bio:logout" withObject:@{@"result":@"error", @"message":[error localizedDescription]}];
+        }
+    }];
 }
 
 

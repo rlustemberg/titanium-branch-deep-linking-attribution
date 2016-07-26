@@ -55,9 +55,11 @@ $.initializeHandlers = function() {
     $.redeemRewardButton.addEventListener('click', $.onRedeemRewardButtonClicked);
     $.creditHistoryButton.addEventListener('click', $.onCreditHistoryButtonClicked);
     $.branchUniversalButton.addEventListener('click', $.onBranchUniversalButtonClicked);
+    $.logoutButton.addEventListener('click', $.onLogoutButtonClicked);
 
     // Branch Listeners
     branch.addEventListener("bio:initSession", $.onInitSessionFinished);
+    branch.addEventListener("bio:logout", $.onLogoutFinished);
     branch.addEventListener("bio:loadRewards", $.onLoadRewardFinished);
     branch.addEventListener("bio:getCreditHistory", $.onGetCreditHistoryFinished);
     branch.addEventListener("bio:redeemRewards", $.onRedeemRewardFinished);
@@ -71,6 +73,11 @@ $.initializeHandlers = function() {
 $.onInitSessionFinished = function(data) {
     Ti.API.info("inside onInitSessionFinished");
     showData(data);
+}
+
+$.onLogoutFinished = function() {
+    Ti.API.info("inside onLogoutFinished");
+    alert("Logout Success!");
 }
 
 $.onGetSessionButtonClicked = function() {
@@ -113,6 +120,11 @@ $.onBranchUniversalButtonClicked = function() {
     var branchUniversalWin = Alloy.createController('branchUniversal', {});
     view = branchUniversalWin.getView();
     view.open();
+}
+
+$.onLogoutButtonClicked = function() {
+    Ti.API.info("inside onLogoutButtonClicked");
+    branch.logout();
 }
 
 $.onRewardBalanceButtonClicked = function() {

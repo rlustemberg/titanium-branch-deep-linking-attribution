@@ -317,6 +317,7 @@ ___
 ### logout()
 
 Logs out the current session, replaces session IDs and identity IDs.
+To implement the callback, you must add a listener to the event `bio:logout`.
 
 ##### Usage
 ```js

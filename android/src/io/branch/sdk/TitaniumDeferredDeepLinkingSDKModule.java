@@ -214,10 +214,11 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	public void logout()
 	{
 		Log.d(LCAT, "start logout");
+
 		final Activity activity = this.getActivity();
 		final Branch instance = Branch.getInstance(activity);
 
-		instance.logout();
+		instance.logout(new LogoutListener());
 	}
 
 	@Kroll.method
@@ -363,6 +364,27 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	        }
         }
     }
+
+	protected class LogoutListener implements Branch.LogoutStatusListener
+	{
+		@Override
+		public void onLogoutFinished(boolean changed, BranchError error) {
+			Log.d(LCAT, "inside onLogoutFinished");
+
+	        TitaniumDeferredDeepLinkingSDKModule self = TitaniumDeferredDeepLinkingSDKModule.this;
+			KrollDict response = new KrollDict();
+			
+			if (error == null) {
+				response.put("result", "success");
+			} else {
+				String errorMessage = error.getMessage();
+				response.put("result", "error");
+				response.put("message", errorMessage);
+			}
+
+			self.fireEvent("bio:logout", response);
+		}
+	}
 
     protected class LoadRewardsListener implements Branch.BranchReferralStateChangedListener
     {

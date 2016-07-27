@@ -193,32 +193,19 @@
         shareText = [args objectAtIndex:2];
     }
 
-    NSDictionary *arg1 = [args objectAtIndex:0];
-    NSDictionary *arg2 = [args objectAtIndex:1];
-
-    BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
-
-    for (id key in arg1) {
-        if ([key isEqualToString:@"duration"]) {
-            linkProperties.matchDuration = (NSUInteger)[((NSNumber *)[arg1 objectForKey:key]) integerValue];
-        }
-        else {
-            [linkProperties setValue:[arg1 objectForKey:key] forKey:key];
-        }
-    }
-
-    for (id key in arg2) {
-        [linkProperties addControlParam:key withValue:[arg2 objectForKey:key]];
-    }
-
+    NSDictionary *options = [args objectAtIndex:0];
+    NSDictionary *controlParams = [args objectAtIndex:1];
+    NSMutableDictionary *mutableCombinedParams = [options mutableCopy];
+    [mutableCombinedParams addEntriesFromDictionary:controlParams];
+    
+    NSDictionary *combinedParams = mutableCombinedParams;
+    BranchLinkProperties *linkProperties = [BranchLinkProperties getBranchLinkPropertiesFromDictionary:combinedParams];
     UIActivityItemProvider *itemProvider = [self.branchUniversalObj getBranchActivityItemWithLinkProperties:linkProperties];
-
     NSMutableArray *items = [NSMutableArray arrayWithObject:itemProvider];
 
     if (shareText) {
         [items addObject:shareText];
     }
-
     if (linkProperties.controlParams[@"$email_body"]) {
         [items addObject:linkProperties.controlParams[@"$email_body"]];
     }
@@ -233,12 +220,13 @@
             NSLog(@"[Branch warning] Unable to setValue 'emailSubject' forKey 'subject' on UIActivityViewController.");
         }
     }
-    
+
     [shareViewController setCompletionWithItemsHandler: ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-        [self fireEvent:@"bio:shareChannelSelected" withObject:@{@"channelName":activityType}];
+        [self fireEvent:@"bio:shareChannelSelected"];
     }];
 
     dispatch_async(dispatch_get_main_queue(), ^{
+        [self.branchUniversalObj showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:shareViewController completion:^(NSString *activityType, BOOL completed) {}];
         [[TiApp app] showModalController:shareViewController animated:YES];
     });
 }

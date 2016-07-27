@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to the Branch Titanium SDK will be documented here.
 
+## [v1.1.7] - 2016-07-27
+- **iOS**: Fixed share sheet crash issue wherein fireEvent causes uncaught exception
+
 ## [v1.1.6] - 2016-07-26
 - Added callback parameter for `logout()`
 

@@ -226,12 +226,6 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
     return [Branch getTestInstance];
 }
 
-- (void)setDebug:(id)args
-{
-    [[Branch getInstance] setDebug];
-}
-
-
 #pragma mark - InitSession Permutation methods
 
 - (void)initSession:(id)args

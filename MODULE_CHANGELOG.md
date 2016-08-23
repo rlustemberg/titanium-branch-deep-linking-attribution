@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to the Branch Titanium SDK will be documented here.
 
+## [v1.2.1] - 2016-08-23
+- Removed depcrecated method `setDebug`.
+
+## [v1.2.0] - 2016-07-27
+- Updated Andorid & iOS SDKs
+
 ## [v1.1.7] - 2016-07-27
 - **iOS**: Fixed share sheet crash issue wherein fireEvent causes uncaught exception
 

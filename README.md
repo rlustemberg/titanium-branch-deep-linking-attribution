@@ -212,22 +212,6 @@ ___
 
 * * *
 
-### setDebug()
-
-Setting the SDK debug flag will generate a new device ID each time the app is installed
-instead of possibly using the same device id.  This is useful when testing.
-
-##### Usage
-
-```js
-branch.setDebug(true);
-```
-
-This needs to be set before the Branch.init call!!!
-
-___
-
-
 ### initSession()
 
 Initializes the branch instance.

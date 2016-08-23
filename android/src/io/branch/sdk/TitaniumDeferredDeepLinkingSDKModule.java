@@ -103,16 +103,6 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	}
 
 	@Kroll.method
-	public void setDebug()
-	{
-		Log.d(LCAT, "start setDebug");
-		final Activity activity = this.getActivity();
-		final Branch instance = Branch.getInstance(activity);
-
-		instance.setDebug();
-	}
-
-	@Kroll.method
 	public KrollDict getLatestReferringParams()
 	{
 		Log.d(LCAT, "start getLatestReferringParams");

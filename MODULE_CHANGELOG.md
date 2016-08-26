@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to the Branch Titanium SDK will be documented here.
 
+## [v1.2.2] - 2016-08-26
+- **iOS**: Fixed share sheet crash for iPad.
+
 ## [v1.2.1] - 2016-08-23
 - Removed depcrecated method `setDebug`.
 

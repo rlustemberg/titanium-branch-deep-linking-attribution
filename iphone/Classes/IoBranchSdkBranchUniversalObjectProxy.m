@@ -202,6 +202,10 @@
     BranchLinkProperties *linkProperties = [BranchLinkProperties getBranchLinkPropertiesFromDictionary:combinedParams];
     UIActivityItemProvider *itemProvider = [self.branchUniversalObj getBranchActivityItemWithLinkProperties:linkProperties];
     NSMutableArray *items = [NSMutableArray arrayWithObject:itemProvider];
+    UIActivityViewController *shareViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+
+    // Change Rect to position Popover
+    UIViewController *view = [UIApplication sharedApplication].keyWindow.rootViewController;
 
     if (shareText) {
         [items addObject:shareText];
@@ -209,9 +213,6 @@
     if (linkProperties.controlParams[@"$email_body"]) {
         [items addObject:linkProperties.controlParams[@"$email_body"]];
     }
-
-    UIActivityViewController *shareViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
-
     if (linkProperties.controlParams[@"$email_subject"]) {
         @try {
             [shareViewController setValue:linkProperties.controlParams[@"$email_subject"] forKey:@"subject"];
@@ -226,8 +227,16 @@
     }];
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.branchUniversalObj showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:shareViewController completion:^(NSString *activityType, BOOL completed) {}];
-        [[TiApp app] showModalController:shareViewController animated:YES];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            [self.branchUniversalObj showShareSheetWithLinkProperties:linkProperties
+                                     andShareText:shareText
+                                     fromViewController:shareViewController
+                                     completion:^(NSString *activityType, BOOL completed) {}];
+            [[TiApp app] showModalController:shareViewController animated:YES];
+        } else {
+            UIPopoverController *popup = [[UIPopoverController alloc] initWithContentViewController:shareViewController];
+            [popup presentPopoverFromRect:CGRectMake(view.view.frame.size.width/2, view.view.frame.size.width/2, 100, 100) inView:view.view permittedArrowDirections:0 animated:YES];
+        }
     });
 }
 

@@ -13,7 +13,7 @@ $.initialize = function(params) {
     $.window.open();
 
     Ti.API.info("start initSession");
-    branch.setDebug();
+    
     branch.initSession();
 };
 

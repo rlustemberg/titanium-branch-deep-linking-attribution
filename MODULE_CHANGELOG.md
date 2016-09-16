@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Branch Titanium SDK will be documented here.
 
+## [v1.4.0] - 2016-09-15
+- **Android**: Updated SDK to v2.4.0
+- **iOS**: Updated SDK to v0.12.9
+
 ## [v1.3.0] - 2016-09-02
 - **Android**: Updated SDK to v2.2.0
 - **iOS**: Updated SDK to v0.12.6

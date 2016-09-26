@@ -36,20 +36,22 @@ To build and run the Branch Titanium TestBed App for iOS, please perform the fol
    - [https://github.com/BranchMetrics/titanium-branch-deep-linking#ios-register-a-uri-scheme-and-add-your-branch-key](https://github.com/BranchMetrics/titanium-branch-deep-linking#ios-register-a-uri-scheme-and-add-your-branch-key)
 
 2. If you are interested in testing Universal Links, then configure Universal Links for the TestBed app using the instructions below: 
-   - [https://github.com/BranchMetrics/titanium-branch-deep-linking#ios-register-a-uri-scheme-and-add-your-branch-key](https://github.com/BranchMetrics/titanium-branch-deep-linking#ios-register-a-uri-scheme-and-add-your-branch-key)   
-3. From command line, navigate to `titanium-branch-deep-linking/testbed`.
+   - [https://github.com/BranchMetrics/titanium-branch-deep-linking#ios-enable-universal-links](https://github.com/BranchMetrics/titanium-branch-deep-linking#ios-enable-universal-links)   
+3. From command line, navigate to: `titanium-branch-deep-linking/testbed`.
 4. Type `titanium build --platform ios` to build and run the app. 
 
-If the command executes correctly, then the TestBed will load in a iOS simulator.
+If the command executes correctly, then the TestBed app will load in a iOS simulator.
 
 ##Build and run the Android TestBed App:
 
-To build and run the Branch Titanium TestBed App for Android, please perform the following steps:
+To build and run the Branch Titanium TestBed app for Android, please perform the following steps:
 
 1. Open `tiapp.xml` in your favorite text editor and update it with your Branch Key. Also register a URI scheme for it. 
-   Detailed instructions on how to perform this step can be found at the following location:
-   - [https://github.com/BranchMetrics/titanium-branch-deep-linking#android-register-a-uri-scheme-and-add-your-branch-key](https://github.com/BranchMetrics/titanium-branch-deep-linking#android-register-a-uri-scheme-and-add-your-branch-key)
+      
+   -  Detailed instructions on how to perform this step can be found at the following location:
+[https://github.com/BranchMetrics/titanium-branch-deep-linking#android-register-a-uri-scheme-and-add-your-branch-key](https://github.com/BranchMetrics/titanium-branch-deep-linking#android-register-a-uri-scheme-and-add-your-branch-key)
 2. From command line, navigate to: `titanium-branch-deep-linking/testbed`.
-3. Type 'titanium build --platform android' to build and run the app.
+3. Type `titanium build --platform android` to build and run the app.
 
 If the command executes correctly, then the TestBed app will load in a Android emulator.
+

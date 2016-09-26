@@ -7,7 +7,7 @@ Branch’s Titanium TestBed app serves as a reference implementation to help you
 To start using the Titanium TestBed app, please ensure that you have installed and configured Titanium CLI 
 (command line interface) from the following location:
 
-- [http://docs.appcelerator.com/platform/latest/#!/guide/Titanium_Command-Line_Interface_Reference-section-35619828_TitaniumCommand-LineInterfaceReference-InstallandConfiguretheCLI] ((http://docs.appcelerator.com/platform/latest/#!/guide/Titanium_Command-Line_Interface_Reference-section-35619828_TitaniumCommand-LineInterfaceReference-InstallandConfiguretheCLI) 
+- http://docs.appcelerator.com/platform/latest/#!/guide/Titanium_Command-Line_Interface_Reference-section-35619828_TitaniumCommand-LineInterfaceReference-InstallandConfiguretheCLI 
 
 In addition, please ensure that Titanium CLI knows where your Android and iOS SDKs are located. 
 

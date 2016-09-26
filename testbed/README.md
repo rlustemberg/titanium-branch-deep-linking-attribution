@@ -42,7 +42,7 @@ To build and run the Branch Titanium TestBed App for iOS, please perform the fol
 
 If the command executes correctly, then the TestBed app will load in a iOS simulator.
 
-##Build and run the Android TestBed App:
+## Build and Run the Android TestBed App:
 
 To build and run the Branch Titanium TestBed app for Android, please perform the following steps:
 

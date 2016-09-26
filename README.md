@@ -12,8 +12,9 @@ _____
 
 ## Demo App
 
-There's a full demo app embedded in the repository, but you should also check out our live demo: Branch Monster Factory. We've open sourced the Branchster's app as well if you'd like to dig in.
+There's a full demo app [embedded in the repository](https://github.com/BranchMetrics/titanium-branch-deep-linking/tree/master/testbed), but you should also check out our live demo: Branch Monster Factory. We've open sourced the Branchster's app as well if you'd like to dig in.
 
+To setup the testbed app, please check out the [respective instructions](https://github.com/BranchMetrics/titanium-branch-deep-linking/tree/master/testbed) in the folder.
 ___
 
 ## Register Your App

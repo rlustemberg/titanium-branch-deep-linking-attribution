@@ -196,37 +196,38 @@
     NSDictionary *options = [args objectAtIndex:0];
     NSDictionary *controlParams = [args objectAtIndex:1];
     NSMutableDictionary *mutableCombinedParams = [options mutableCopy];
-    [mutableCombinedParams addEntriesFromDictionary:controlParams];
-    
+    [mutableCombinedParams addEntriesFromDictionary:controlParams];        
     NSDictionary *combinedParams = mutableCombinedParams;
     BranchLinkProperties *linkProperties = [BranchLinkProperties getBranchLinkPropertiesFromDictionary:combinedParams];
-    UIActivityItemProvider *itemProvider = [self.branchUniversalObj getBranchActivityItemWithLinkProperties:linkProperties];
-    NSMutableArray *items = [NSMutableArray arrayWithObject:itemProvider];
-    UIActivityViewController *shareViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
-
-    // Change Rect to position Popover
-    UIViewController *view = [UIApplication sharedApplication].keyWindow.rootViewController;
-
-    if (shareText) {
-        [items addObject:shareText];
-    }
-    if (linkProperties.controlParams[@"$email_body"]) {
-        [items addObject:linkProperties.controlParams[@"$email_body"]];
-    }
-    if (linkProperties.controlParams[@"$email_subject"]) {
-        @try {
-            [shareViewController setValue:linkProperties.controlParams[@"$email_subject"] forKey:@"subject"];
-        }
-        @catch (NSException *exception) {
-            NSLog(@"[Branch warning] Unable to setValue 'emailSubject' forKey 'subject' on UIActivityViewController.");
-        }
-    }
-
-    [shareViewController setCompletionWithItemsHandler: ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-        [self fireEvent:@"bio:shareChannelSelected"];
-    }];
-
+    
     dispatch_async(dispatch_get_main_queue(), ^{
+
+        UIActivityItemProvider *itemProvider = [self.branchUniversalObj getBranchActivityItemWithLinkProperties:linkProperties];
+        NSMutableArray *items = [NSMutableArray arrayWithObject:itemProvider];
+        UIActivityViewController *shareViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+
+        // Change Rect to position Popover
+        UIViewController *view = [UIApplication sharedApplication].keyWindow.rootViewController;
+
+        if (shareText) {
+            [items addObject:shareText];
+        }
+        if (linkProperties.controlParams[@"$email_body"]) {
+            [items addObject:linkProperties.controlParams[@"$email_body"]];
+        }
+        if (linkProperties.controlParams[@"$email_subject"]) {
+            @try {
+                [shareViewController setValue:linkProperties.controlParams[@"$email_subject"] forKey:@"subject"];
+            }
+            @catch (NSException *exception) {
+                NSLog(@"[Branch warning] Unable to setValue 'emailSubject' forKey 'subject' on UIActivityViewController.");
+            }
+        }
+
+        [shareViewController setCompletionWithItemsHandler: ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+            [self fireEvent:@"bio:shareChannelSelected"];
+        }];
+
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             [self.branchUniversalObj showShareSheetWithLinkProperties:linkProperties
                                      andShareText:shareText

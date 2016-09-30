@@ -11,7 +11,7 @@ To start using the Titanium TestBed app, please ensure that you have installed a
 
 In addition, please ensure that Titanium CLI knows where your Android and iOS SDKs are located. 
 
-## Clone/Download the Titanium SDK repo:
+## Clone or Download the Titanium SDK Repo:
 
 If you have github installed, then from command line:
 

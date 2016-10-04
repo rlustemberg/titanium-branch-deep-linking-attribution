@@ -206,9 +206,6 @@
         NSMutableArray *items = [NSMutableArray arrayWithObject:itemProvider];
         UIActivityViewController *shareViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
 
-        // Change Rect to position Popover
-        UIViewController *view = [UIApplication sharedApplication].keyWindow.rootViewController;
-
         if (shareText) {
             [items addObject:shareText];
         }
@@ -223,6 +220,9 @@
                 NSLog(@"[Branch warning] Unable to setValue 'emailSubject' forKey 'subject' on UIActivityViewController.");
             }
         }
+
+        // Change Rect to position Popover
+        UIViewController *view = [UIApplication sharedApplication].keyWindow.rootViewController;
 
         [shareViewController setCompletionWithItemsHandler: ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
             [self fireEvent:@"bio:shareChannelSelected"];

@@ -37,15 +37,15 @@ $.initializeHandlers = function() {
 $.onInitBranchButtonClicked = function() {
     Ti.API.info("inside onInitBranchButtonClicked");
     branchUniversalObjectProxy = branch.createBranchUniversalObject({
-        "canonicalIdentifier" : "sample-id",
-        "title" : "Sample",
-        "contentDescription" : "This is a sample",
-        "contentImageUrl" : "http://contentimageurl.com/media/1235904.jpg",
-        "contentIndexingMode" : "private",
-        "contentMetadata" : {
-            "key" : "value",
-            "key2" : "value2"
-        },
+      "canonicalIdentifier" : "sample-id",
+      "title" : "Sample",
+      "contentDescription" : "This is a sample",
+      "contentImageUrl" : "http://sample-host.com/media/1235904.jpg",
+      "contentIndexingMode" : "private",
+      "contentMetadata" : {
+          "key" : "value",
+          "key2" : "value2"
+      },
     });
 
     // Branch Universal Object Listeners
@@ -93,13 +93,12 @@ $.onGenerateUrlFinished = function(data) {
 $.onShareSheetButtonClicked = function() {
     Ti.API.info("inside onShareSheetButtonClicked");
     branchUniversalObjectProxy.showShareSheet({
-        "feature" : "share-feature",
-        "channel" : "share-channel",
-        "stage" : "share-stage",
+        "feature" : "sample-feature",
+        "channel" : "sample-channel",
+        "stage" : "sample-stage",
         "duration" : 1,
-         "tags":["nl"]
     }, {
-        "$desktop_url" : "http://desktop_url.com",
+        "$desktop_url" : "http://desktop-url.com",
         "$email_subject" : "This is a sample subject",
         "$email_body" : "This is a sample body",
     });

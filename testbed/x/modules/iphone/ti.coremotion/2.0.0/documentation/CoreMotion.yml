@@ -1,0 +1,947 @@
+<hr />
+<p>name: Modules.CoreMotion
+platforms: [iphone, ipad]
+summary: Allows Titanium client applications to access Apple's CoreMotion APIs.
+since: "3.3.0"
+extends: Titanium.Module
+excludes:
+    methods: [addEventListener, fireEvent, removeEventListener, applyProperties]
+    properties: [bubbleParent]
+description: |
+    The Core Motion module provides access to Apple's CoreMotion APIs. The Core Motion module provides support
+    for monitoring various hardware sensors on iOS devices, such as the accelerometer, gyroscope, and
+    magnetometer. The Core Motion module allows you to access the metrics provided by these sensors.</p>
+<pre><code>For instruction and examples of using the Core Motion Module, see the
+[Core Motion Module guide](http://docs.appcelerator.com/titanium/latest/#!/guide/Core_Motion_Module).
+
+
+### Requirements
+
+This module only works with devices running iOS 7 and later. Not all devices have the same hardware sensors,
+so all features may not be available for all devices. Be sure to use the API to check the device
+for the existence of a feature.
+
+You can only test the Core Motion module on a device. The Core Motion API cannot be tested on the iOS
+simulator.
+
+Some features may require permission to use "Motion Activity". iOS requires the user's approval to
+use the "Motion Activity" permission. When the application uses the Core Motion API for the first
+time, iOS prompts the user to either approve or deny access to the Core Motion features of the
+device. The user can change the permission settings with **Settings** &gt; **Privacy**.
+
+
+### Getting Started
+
+Once you have [installed](#!/guide/Using_a_Module) the module and added it as a depedency,
+use `require()` to access it from JavaScript:
+
+    var CoreMotion = require("ti.coremotion");
+
+    The `CoreMotion` variable is a reference to the Module object.  Use this reference to make
+    subsequent calls to the CoreMotion Module API. The following example shows the step counting
+    API of `CoreMotion`.
+
+    var pedometer = CoreMotion.createPedometer();
+
+    // This code checks to see if the device can gather step counting data
+    if (pedometer.isStepCountingAvailable()) {
+        // If it can, it starts the step counter and outputs the data to the console
+        pedometer.startPedometerUpdates(function(e){
+            Ti.API.info(JSON.stringify(e));
+        });
+    } else {
+        Ti.API.warn('This device does not support counting steps.');
+    }
+
+
+### Sample Application
+
+The module ZIP file contains a Core Motion sample applications in `example/app.js`.
+
+### Further Reading
+
+- [iOS Developer Library: Core Motion Framework Reference](https://developer.apple.com/library/ios/documentation/CoreMotion/Reference/CoreMotion_Reference/_index.html)
+- [iOS Developer Library: Motion Events](https://developer.apple.com/library/ios/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/motion_event_basics/motion_event_basics.html)
+</code></pre>
+<p>methods:</p>
+<p>properties:
+  - name: ERROR_NULL
+    summary: No error.
+    type: Number
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: ERROR_DEVICE_REQUIRES_MOVEMENT
+    summary: The device must move for a sampling of motion data to occur.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: ERROR_TRUE_NORTH_NOT_AVAILABLE
+    summary: True north is not available on this device. This usually indicates that the device's location is not yet available.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: ERROR_UNKNOWN
+    summary: An unknown error occurred.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: ERROR_MOTION_ACTIVITY_NOT_AVAILABLE
+    summary: Motion activity support is not available on the current device.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: ERROR_MOTION_ACTIVITY_NOT_AUTHORIZED
+    summary: The app is not currently authorized to use motion activity support.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: ERROR_MOTION_ACTIVITY_NOT_ENTITLED
+    summary: The app is missing a required entitlement.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: ERROR_INVALID_PARAMETER
+    summary: An invalid parameter was specified.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: ATTITUDE_REFERENCE_FRAME_X_ARBITRARY_Z_VERTICAL
+    summary: |
+        Describes a reference frame in which the Z axis is vertical and the X axis points
+        in an arbitrary direction in the horizontal plane.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: ATTITUDE_REFERENCE_FRAME_X_ARBITRARY_CORRECTED_Z_VERTICAL
+    summary: |
+        Describes the same reference frame as
+        <Modules.CoreMotion.ATTITUDE_REFERENCE_FRAME_X_ARBITRARY_Z_VERTICAL>
+        except that the magnetometer, when available and calibrated, is used to
+        improve long-term yaw accuracy. Using this constant instead of
+        <Modules.CoreMotion.ATTITUDE_REFERENCE_FRAME_X_ARBITRARY_Z_VERTICAL>
+        results in increased CPU usage.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: ATTITUDE_REFERENCE_FRAME_X_MAGNETIC_NORTH_Z_VERTICAL
+    summary: |
+        Describes a reference frame in which the Z axis is vertical and the X axis points
+        toward magnetic north. Note that using this reference frame may require device
+        movement to calibrate the magnetometer.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: ATTITUDE_REFERENCE_FRAME_X_TRUE_NORTH_Z_VERTICAL
+    summary: |
+        Describes a reference frame in which the Z axis is vertical and the X axis points
+        toward true north. Note that using this reference frame may require device movement
+        to calibrate the magnetometer. It also requires the location to be available in order
+        to calculate the difference between magnetic and true north.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: MAGNETIC_FIELD_CALIBRATION_ACCURACY_UNCALIBRATED
+    summary: The magnetic field estimate is not calibrated.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: MAGNETIC_FIELD_CALIBRATION_ACCURACY_LOW
+    summary: The accuracy of the magnetic field calibration is low.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: MAGNETIC_FIELD_CALIBRATION_ACCURACY_MEDIUM
+    summary: The accuracy of the magnetic field calibration is medium.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: MAGNETIC_FIELD_CALIBRATION_ACCURACY_HIGH
+    summary: The accuracy of the magnetic field calibration is high.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: MOTION_ACTIVITY_CONFIDENCE_LOW
+    summary: Confidence is low.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: MOTION_ACTIVITY_CONFIDENCE_MEDIUM
+    summary: Confidence is good.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: MOTION_ACTIVITY_CONFIDENCE_HIGH
+    summary: Confidence is high.
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionReferenceFrameArgs
+summary: |
+    Dictionary of arguments passed to the
+    <a href="Modules.CoreMotion.DeviceMotion.startDeviceMotionUpdatesUsingReferenceFrame">DeviceMotion.startDeviceMotionUpdatesUsingReferenceFrame()</a> method.
+platforms: [iphone, ipad]
+since: "3.3.0"
+properties:
+  - name: referenceFrame
+    summary: A constant identifying the reference frame to use for device-motion updates.
+    description: |
+        Could be <Modules.CoreMotion.ATTITUDE_REFERENCE_FRAME_X_ARBITRARY_Z_VERTICAL>,
+        <Modules.CoreMotion.ATTITUDE_REFERENCE_FRAME_X_ARBITRARY_CORRECTED_Z_VERTICAL>,
+        <Modules.CoreMotion.ATTITUDE_REFERENCE_FRAME_X_MAGNETIC_NORTH_Z_VERTICAL>, or
+        <Modules.CoreMotion.ATTITUDE_REFERENCE_FRAME_X_TRUE_NORTH_Z_VERTICAL>.
+    type: Number</p>
+<hr />
+<p>name: CoreMotionQueryActivityArgs
+summary: |
+    Dictionary of arguments to pass to the <a href="Modules.CoreMotion.MotionActivity.queryActivity">MotionActivity.queryActivity()</a> method.
+platforms: [iphone, ipad]
+since: "3.3.0"
+properties:
+  - name: start
+    summary: The start time to use when gathering motion data.
+    type: Date</p>
+<ul>
+<li>name: end
+    summary: The end time to use when gathering motion data.
+    type: Date</li>
+</ul>
+<hr />
+<p>name: CoreMotionStartStepCountingArgs
+summary: |
+    Dictionary of arguments to pass to the <a href="Modules.CoreMotion.Stepcounter.startStepCountingUpdates">StepCounter.startStepCountingUpdates()</a> method.
+platforms: [iphone, ipad]
+since: "3.3.0"
+properties:
+  - name: stepCounts
+    summary: |
+        The number of steps to record before executing the callback.
+        The number of steps must be greater than 0.
+    type: Number</p>
+<hr />
+<p>name: CoreMotionStartPedometerArgs
+summary: |
+    Dictionary of arguments to pass to the <a href="Modules.CoreMotion.Pedometer.startPedometerUpdates">Pedometer.startPedometerUpdates()</a> method.
+platforms: [iphone, ipad]
+since: "5.2.0"
+properties:
+  - name: start
+    summary: The start time to use when gathering pedometer data.
+    type: Date</p>
+<hr />
+<p>name: CoreMotionQueryStepCountArgs
+summary: |
+    Dictionary of arguments to pass to the <a href="Modules.CoreMotion.Stepcounter.queryStepCount">Stepcounter.queryStepCount()</a> method.
+platforms: [iphone, ipad]
+since: "3.3.0"
+properties:
+  - name: start
+    summary: The start time to use when gathering step count data.
+    type: Date</p>
+<ul>
+<li>name: end
+    summary: The end time to use when gathering step count data.
+    type: Date</li>
+</ul>
+<hr />
+<p>name: CoreMotionAccelerometerDataWithSuccess
+summary: |
+    Dictionary passed to the callback of the <a href="Modules.CoreMotion.Accelerometer.startAccelerometerUpdates">Accelerometer.startAccelerometerUpdates()</a> method.
+platforms: [iphone, ipad]
+since: "3.3.0"
+extends: CoreMotionAccelerometerData
+properties:
+  - name: success
+    summary: A Boolean indicating if the operation was successful or not.
+    type: Boolean
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: error
+    summary: An error message describing the error if there was one.
+    type: String
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: code
+    summary: An error code describing the error if there was one.
+    description: See <code>ERROR</code> constants for possible values.
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionGyroDataWithSuccess
+summary: |
+    Dictionary passed to the callback of the <a href="Modules.CoreMotion.Gyroscope.startGyroUpdates">Gyroscope.startGyroUpdates()</a> method.
+platforms: [iphone, ipad]
+since: "3.3.0"
+extends: CoreMotionGyroData
+properties:
+  - name: success
+    summary: A Boolean indicating if the operation was successful or not.
+    type: Boolean
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: error
+    summary: An error message describing the error if there was one.
+    type: String
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: code
+    summary: An error code describing the error if there was one.
+    description: See <code>ERROR</code> constants for possible values.
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionMagnetometerDataWithSuccess
+summary: |
+    Dictionary passed to the callback of the <a href="Modules.CoreMotion.Magnetometer.startMagnetometerUpdates">Magnetometer.startMagnetometerUpdates()</a> method.
+platforms: [iphone, ipad]
+since: "3.3.0"
+extends: CoreMotionMagnetometerData
+properties:
+  - name: success
+    summary: A Boolean indicating if the operation was successful or not.
+    type: Boolean
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: error
+    summary: An error message describing the error if there was one.
+    type: String
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: code
+    summary: An error code describing the error if there was one.
+    description: See <code>ERROR</code> constants for possible values.
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionDeviceMotionDataWithSuccess
+summary: |
+    Dictionary passed to the callback of the
+    <a href="Modules.CoreMotion.Magnetometer.startDeviceMotionUpdates">Magnetometer.startDeviceMotionUpdates()</a> and
+    <a href="Modules.CoreMotion.Magnetometer.startDeviceMotionUpdatesUsingReferenceFrame">Magnetometer.startDeviceMotionUpdatesUsingReferenceFrame()</a> methods.
+platforms: [iphone, ipad]
+since: "3.3.0"
+extends: CoreMotionDeviceMotionData
+properties:
+  - name: success
+    summary: A Boolean indicating if the operation was successful or not.
+    type: Boolean
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: error
+    summary: An error message describing the error if there was one.
+    type: String
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: code
+    summary: An error code describing the error if there was one.
+    description: See <code>ERROR</code> constants for possible values.
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionPedometerDataWithSuccess
+summary: |
+    Dictionary passed to the callback of the
+    <a href="Modules.CoreMotion.Pedometer.startDeviceMotionUpdates">Pedometer.startPedometerUpdates()</a> and
+    <a href="Modules.CoreMotion.Pedometer.queryPedometerData">Pedometer.queryPedometerData()</a> methods.
+platforms: [iphone, ipad]
+since: "5.2.0"
+extends: CoreMotionDeviceMotionData
+properties:
+  - name: success
+    summary: A Boolean indicating if the operation was successful or not.
+    type: Boolean
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: error
+    summary: An error message describing the error if there was one.
+    type: String
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: code
+    summary: An error code describing the error if there was one.
+    description: See <code>ERROR</code> constants for possible values.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: startDate
+    summary: The start time for the pedometer data.
+    type: Date
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: endDate
+    summary: The end time for the pedometer data.
+    type: Date
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: numberOfSteps
+    summary: The number of steps taken by the user.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: distance
+    summary: The estimated distance (in meters) traveled by the user.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: floorsAscended
+    summary: The approximate number of floors ascended by walking.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: floorsDescended
+    summary: The approximate number of floors descended by walking.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: currentPace
+    summary: | 
+        The current pace of the user, measured in seconds per meter.
+        Note: This property is only available on iOS 9 and later.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: currentCadence
+    summary: |
+        The rate at which steps are taken, measured in steps per second.
+        Note: This property is only available on iOS 9 and later.
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionAccelerometerData
+platforms: [iphone, ipad]
+summary: Representation of an accelerometer event.
+since: "3.3.0"
+extends: CoreMotionLogItem
+properties:
+  - name: acceleration
+    summary: The acceleration measured by the accelerometer.
+    type: CoreMotionAcceleration
+    permission: "read-only"</p>
+<hr />
+<p>name: CoreMotionGyroData
+platforms: [iphone, ipad]
+summary: Representation of a gyroscope event.
+since: "3.3.0"
+extends: CoreMotionLogItem
+properties:
+  - name: rotationRate
+    summary: The rotation rate measured by the gyroscope.
+    type: CoreMotionRotationRate
+    permission: "read-only"</p>
+<hr />
+<p>name: CoreMotionMagnetometerData
+platforms: [iphone, ipad]
+summary: Representation of a magnetometer event.
+since: "3.3.0"
+extends: CoreMotionLogItem
+properties:
+  - name: magneticField
+    summary: The magnetic field measured by the magnetometer.
+    description: |
+        For more information, see
+        <a href="https://developer.apple.com/library/ios/documentation/CoreMotion/Reference/CMMagnetometerData_Class/Reference/Reference.html#//apple_ref/occ/instp/CMMagnetometerData/magneticField">iOS Developer Library: CMMagnetometerData.magneticField property</a>.
+    type: CoreMotionMagneticField
+    permission: "read-only"</p>
+<hr />
+<p>name: CoreMotionDeviceMotionData
+platforms: [iphone, ipad]
+summary: Representation of a device-motion event.
+since: "3.3.0"
+extends: CoreMotionLogItem
+properties:
+  - name: attitude
+    summary: The attitude of the device.
+    type: CoreMotionAttitude
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: rotationRate
+    summary: The roation rate of the device.
+    type: CoreMotionRotationRate
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: gravity
+    summary: The gravity acceleration vector expressed in the device's reference frame.
+    type: CoreMotionAcceleration
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: userAcceleration
+    summary: The acceleration that the user is giving to the device.
+    type: CoreMotionAcceleration
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: magneticField
+    summary: Returns the magnetic field vector with respect to the device.
+    type: CoreMotionCalibratedMagneticField
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionActivityData
+platforms: [iphone, ipad]
+summary: Represents the current motion associated with the device.
+description: Note that there is no timestamp property for this class.
+since: "3.3.0"
+properties:
+  - name: activity
+    summary: The motion activity object that defines the current type of motion for the device.
+    type: CoreMotionActivity
+    permission: "read-only"</p>
+<hr />
+<p>name: CoreMotionActivityQueryDataWithSuccess
+summary: |
+    Dictionary passed to the callback of the <a href="Modules.CoreMotion.MotionActivity.queryActivity">MotionActivity.queryActivity()</a> method.
+platforms: [iphone, ipad]
+since: "3.3.0"
+extends: CoreMotionActivityQueryData
+properties:
+  - name: success
+    summary: A Boolean indicating if the operation was successful or not.
+    type: Boolean
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: error
+    summary: An error message describing the error if there was one.
+    type: String
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: code
+    summary: An error code describing the error if there was one.
+    description: See <code>ERROR</code> constants for possible values.
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionActivityQueryData
+platforms: [iphone, ipad]
+summary: Represents the activities that are returned by an activity query.
+since: "3.3.0"
+properties:
+  - name: activities
+    summary: An array of <CoreMotionActivity> objects indicating the updates that occurred.
+    description: |
+        The objects in the array are ordered by the time at which they occurred in the
+        specified time interval. Use the <code>startDate</code> property in each motion object to
+        determine when the update occurred.
+    type: Array<CoreMotionActivity>
+    permission: "read-only"</p>
+<hr />
+<p>name: CoreMotionStepCountingDataWithSuccess
+summary: |
+    Dictionary passed to the callback of the <a href="Modules.CoreMotion.StepCounter.startStepCountingUpdates">StepCounter.startStepCountingUpdates()</a> method.
+platforms: [iphone, ipad]
+since: "3.3.0"
+extends: CoreMotionStepCountingData
+properties:
+  - name: success
+    summary: A Boolean indicating if the operation was successful or not.
+    type: Boolean
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: error
+    summary: An error message describing the error if there was one.
+    type: String
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: code
+    summary: An error code describing the error if there was one.
+    description: See <code>ERROR</code> constants for possible values.
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionStepCountingData
+platforms: [iphone, ipad]
+summary: Represents the steps that are returned by a step-count event.
+since: "3.3.0"
+properties:
+  - name: numberOfSteps
+    summary: The total number of steps since the <a href="Modules.CoreMotion.StepCounter.startStepCountingUpdates">StepCounter.startStepCountingUpdates</a> method was called.
+    type: Number
+    permission: "read-only"</p>
+<ul>
+<li>name: timestamp
+    summary: The time at which the current step count was reported.
+    type: Date
+    permission: "read-only"</li>
+</ul>
+<hr />
+<p>name: CoreMotionStepCountingQueryDataWithSuccess
+summary: |
+    Dictionary passed to the callback of the <a href="Modules.CoreMotion.StepCounter.queryStepCount">StepCounter.ueryStepCount()</a> method.
+platforms: [iphone, ipad]
+since: "3.3.0"
+extends: CoreMotionStepCountingQueryData
+properties:
+  - name: success
+    summary: A Boolean indicating if the operation was successful or not.
+    type: Boolean
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: error
+    summary: An error message describing the error if there was one.
+    type: String
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: code
+    summary: An error code describing the error if there was one.
+    description: See <code>ERROR</code> constants for possible values.
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionStepCountingQueryData
+platforms: [iphone, ipad]
+summary: Represents the steps that are returned by a step-count query.
+since: "3.3.0"
+properties:
+  - name: numberOfSteps
+    summary: The number of steps that occurred between the start and end times specified by the query.
+    type: Number
+    permission: "read-only"</p>
+<hr />
+<p>name: CoreMotionActivity
+platforms: [iphone, ipad]
+summary: Contains the data for a single motion update event.
+description: |
+    For more information see,
+    <a href="https://developer.apple.com/library/ios/documentation/CoreMotion/Reference/CMMotionActivity_class/Reference/Reference.html">iOS Developer Library: CMMotionActivity Class Reference</a>.
+since: "3.3.0"
+properties:
+  - name: stationary
+    summary: A Boolean indicating whether the device is stationary.
+    type: Boolean
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: walking
+    summary: A Boolean indicating whether the device is on a walking person.
+    type: Boolean
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: running
+    summary: A Boolean indicating whether the device is on a running person.
+    type: Boolean
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: automotive
+    summary: A Boolean indicating whether the device is in an automobile.
+    type: Boolean
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: unknown
+    summary: A Boolean indicating whether the type of motion is unknown.
+    type: Boolean
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: startDate
+    summary: The time at which the change in motion occurred.
+    type: Date
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: confidence
+    summary: The confidence in the assessment of the motion type.
+    description: |
+        Could be <Modules.CoreMotion.MOTION_ACTIVITY_CONFIDENCE_LOW>,
+        <Modules.CoreMotion.MOTION_ACTIVITY_CONFIDENCE_MEDIUM>, or
+        <Modules.CoreMotion.MOTION_ACTIVITY_CONFIDENCE_HIGH>
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionAcceleration
+platforms: [iphone, ipad]
+summary: Representation of an accelerometer event.
+since: "3.3.0"
+properties:
+  - name: x
+    summary: X-axis acceleration in G's (gravitational force).
+    type: Number
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: y
+    summary: Y-axis acceleration in G's (gravitational force).
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: z
+    summary: Z-axis acceleration in G's (gravitational force).
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionRotationRate
+platforms: [iphone, ipad]
+summary: Representation of a gyroscope event.
+since: "3.3.0"
+properties:
+  - name: x
+    summary: |
+        The X-axis rotation rate in radians per second. The sign
+        follows the right hand rule: If the right hand is wrapped
+        around the X axis such that the tip of the thumb points toward
+        positive X, a positive rotation is one toward the tips of the
+        other four fingers.
+    type: Number
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: y
+    summary: |
+        The Y-axis rotation rate in radians per second. The sign
+        follows the right hand rule: If the right hand is wrapped
+        around the Y axis such that the tip of the thumb points toward
+        positive Y, a positive rotation is one toward the tips of the
+        other four fingers.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: z
+    summary: |
+        The Z-axis rotation rate in radians per second. The sign
+        follows the right hand rule: If the right hand is wrapped
+        around the Z axis such that the tip of the thumb points toward
+        positive Z, a positive rotation is one toward the tips of the
+        other four fingers.
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionAttitude
+platforms: [iphone, ipad]
+summary: The attitude of the device.
+since: "3.3.0"
+properties:
+  - name: roll
+    summary: The roll of the device, in radians.
+    description: |
+        A roll is a rotation around a longitudinal axis that passes
+        through the device from its top to bottom.
+    type: Number
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: pitch
+    summary: The pitch of the device, in radians.
+    description: |
+        A pitch is a rotation around a lateral axis that passes through
+        the device from side to side.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: yaw
+    summary: The yaw of the device, in radians.
+    description: |
+        A yaw is a rotation around an axis that runs vertically through
+        the device. It is perpendicular to the body of the device, with
+        its origin at the center of gravity and directed toward the bottom
+        of the device.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: rotationMatrix
+    summary: Returns a rotation matrix representing the device's attitude.
+    description: |
+        A rotation matrix in linear algebra describes the rotation of a
+        body in three-dimensional Euclidean space.
+    type: CoreMotionRotationMatrix
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: quaternion
+    summary: Returns a quaternion representing the device's attitude.
+    description: |
+        See <CoreMotionQuaternion> for further information.
+    type: CoreMotionQuaternion
+    permission: "read-only"</p>
+</li>
+</ul>
+<p>methods:
+  - name: multiplyByInverseOfAttitude
+    summary: Yields the change in attitude given a specific attitude.
+    description: |
+        This method multiplies the inverse of the specified <CoreMotionAttitude>
+        object by the attitude represented by the receiving object. It replaces
+        the receiving instance with the attitude change relative to the object
+        passed in attitude. You should cache the <CoreMotionAttitude> instance
+        you want to use as a reference and pass that object as the argument to
+        subsequent calls of this method.
+    parameters:
+      - name: attitude
+        summary: An object representing the device's attitude at a given moment of measurement.
+        type: CoreMotionAttitude</p>
+<hr />
+<p>name: CoreMotionRotationMatrix
+platforms: [iphone, ipad]
+summary: The type of a structure representing a rotation matrix.
+since: "3.3.0"
+properties:
+  - name: m11-m33
+    summary: |
+        Each field in this structure defines an element of the rotation matrix
+        by its position. For example, m11 is the element in row 1, column 1;
+        m31 is the element in row 3, column 1; m13 is the element in row 1, column 3.
+    description: |
+        -  m11, m12, m13
+        -  m21, m22, m23
+        -  m31, m32, m33
+    type: Number
+    permission: "read-only"</p>
+<hr />
+<p>name: CoreMotionQuaternion
+platforms: [iphone, ipad]
+summary: The type for a quaternion representing a measurement of attitude.
+description: |
+    For more information, see
+    <a href="https://developer.apple.com/library/ios/documentation/CoreMotion/Reference/CMAttitude_Class/Reference/Reference.html#//apple_ref/c/tdef/CMQuaternion">iOS Developer Library: CMAttitude.CMQuaternion constant</a>.
+since: "3.3.0"
+properties:
+  - name: x
+    summary: A value for the X-axis.
+    type: Number
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: y
+    summary: A value for the Y-axis.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: z
+    summary: A value for the Z-axis.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: w
+    summary: A value for the W-axis.
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionMagneticField
+platforms: [iphone, ipad]
+summary: A structure containing 3-axis magnetometer data.
+since: "3.3.0"
+properties:
+  - name: x
+    summary: X-axis magnetic field in microteslas.
+    type: Number
+    permission: "read-only"</p>
+<ul>
+<li>
+<p>name: y
+    summary: Y-axis magnetic field in microteslas.
+    type: Number
+    permission: "read-only"</p>
+</li>
+<li>
+<p>name: z
+    summary: Z-axis magnetic field in microteslas.
+    type: Number
+    permission: "read-only"</p>
+</li>
+</ul>
+<hr />
+<p>name: CoreMotionCalibratedMagneticField
+platforms: [iphone, ipad]
+summary: Calibrated magnetic field data and an estimate of the accuracy of the calibration.
+since: "3.3.0"
+properties:
+  - name: field
+    summary: |
+        A structure containing 3-axis calibrated magnetic field data. See the description of
+        the structure of <CoreMotionMagneticField>.
+    type: CoreMotionMagneticField</p>
+<ul>
+<li>name: accuracy
+    summary: An enum-constant value that indicates the accuracy of the magnetic field estimate.
+    type: Number
+    permission: "read-only"</li>
+</ul>
+<hr />
+<p>name: CoreMotionLogItem
+platforms: [iphone, ipad]
+summary: Base class for specific motion types.
+since: "3.3.0"
+properties:
+  - name: timestamp
+    summary: The time when the logged item is valid.
+    description: |
+        The time stamp is the amount of time in milliseconds since the phone booted.
+    type: Number
+    permission: "read-only"</p>

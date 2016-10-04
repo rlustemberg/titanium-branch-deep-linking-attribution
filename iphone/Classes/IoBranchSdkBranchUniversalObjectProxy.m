@@ -204,7 +204,6 @@
 
         UIActivityItemProvider *itemProvider = [self.branchUniversalObj getBranchActivityItemWithLinkProperties:linkProperties];
         NSMutableArray *items = [NSMutableArray arrayWithObject:itemProvider];
-        UIActivityViewController *shareViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
 
         if (shareText) {
             [items addObject:shareText];
@@ -212,6 +211,9 @@
         if (linkProperties.controlParams[@"$email_body"]) {
             [items addObject:linkProperties.controlParams[@"$email_body"]];
         }
+
+        UIActivityViewController *shareViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+
         if (linkProperties.controlParams[@"$email_subject"]) {
             @try {
                 [shareViewController setValue:linkProperties.controlParams[@"$email_subject"] forKey:@"subject"];

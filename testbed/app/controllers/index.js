@@ -19,6 +19,7 @@ $.initialize = function(params) {
 
 $.initializeViews = function() {
     Ti.API.info("start initializeViews");
+    Titanium.UI.setBackgroundColor('green');
 };
 
 $.initializeHandlers = function() {
@@ -73,6 +74,7 @@ $.initializeHandlers = function() {
 $.onInitSessionFinished = function(data) {
     Ti.API.info("inside onInitSessionFinished");
     showData(data);
+    alert(data);
 }
 
 $.onLogoutFinished = function() {

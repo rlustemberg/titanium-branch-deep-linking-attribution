@@ -1,0 +1,8 @@
+{
+	"name": "5.5.1.v20160927053850",
+	"version": "5.5.1",
+	"moduleAPIVersion": "2",
+	"timestamp": "09/27/16 05:38",
+	"githash": "b18727f",
+	"platforms": ["android", "mobileweb", "iphone", "windows"]
+}

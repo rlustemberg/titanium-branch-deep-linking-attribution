@@ -1,0 +1,6 @@
+#!/bin/bash
+
+BIN_DIR=`dirname "$0"`
+. "$BIN_DIR/setclasspath"
+
+"$JAVA" -Xmx2g -jar "$BIN_DIR"/../MakeAppTouchTestable.jar "$@"

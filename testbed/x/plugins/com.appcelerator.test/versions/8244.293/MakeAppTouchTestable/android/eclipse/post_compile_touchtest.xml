@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="post_compile_touchtest">
+
+  <target name="-post-compile-touchtest">
+    
+    <path id="touchtest.antlibs">
+      <fileset dir="TouchTestDriver">
+        <include name="*.jar" />
+      </fileset>
+    </path>
+
+    <taskdef resource="touchtest.anttasks.properties" classpathref="touchtest.antlibs" />
+    
+    <touchtest-adt-validate/>
+    
+    <property file="${eclipse.workspace}/.metadata/.plugins/org.eclipse.core.runtime/.settings/com.android.ide.eclipse.adt.prefs" />
+    <fail message="Please choose an Android SDK location in your ADT preferences." unless="com.android.ide.eclipse.adt.sdk"/>  
+    
+    <property name="sdk.dir" value="${com.android.ide.eclipse.adt.sdk}" />
+    <property name="out.classes.absolute.dir" value="${eclipse.project.path}/bin/classes"/>
+    
+    <!-- jar file from where the tasks are loaded -->
+    <path id="android.antlibs">
+      <!-- Android SDK Tools rev.22 changed the name of anttasks.jar to ant-tasks.jar -->
+      <!-- Thus, we keep both the files as pathelement in case one of them is not found. -->
+      <pathelement path="${sdk.dir}/tools/lib/anttasks.jar" />
+      <pathelement path="${sdk.dir}/tools/lib/ant-tasks.jar" />
+    </path>
+
+    <!-- Custom tasks -->
+    <taskdef resource="anttasks.properties" classpathref="android.antlibs" />
+    
+    <loadproperties srcFile="project.properties" />
+    
+      <gettarget
+        androidJarFileOut="project.target.android.jar"
+        androidAidlFileOut="project.target.framework.aidl"
+        bootClassPathOut="project.target.class.path"
+        targetApiOut="project.target.apilevel"
+        minSdkVersionOut="project.minSdkVersion" />
+    
+      <dependency
+        libraryFolderPathOut="project.library.folder.path"
+        libraryPackagesOut="project.library.packages"
+        libraryManifestFilePathOut="project.library.manifest.file.path"
+        libraryResFolderPathOut="project.library.res.folder.path"
+        libraryBinAidlFolderPathOut="project.library.bin.aidl.folder.path"
+        libraryRFilePathOut="project.library.bin.r.file.path"
+        libraryNativeFolderPathOut="project.library.native.folder.path"
+        jarLibraryPathOut="project.all.jars.path"
+        targetApi="${project.target.apilevel}"
+        buildToolsFolder="${sdk.dir}/build-tools"
+        renderscriptSupportLibsOut=""
+        verbose="${verbose}" />
+
+    <touchtest-post-compile/>
+  
+  </target>
+
+</project>

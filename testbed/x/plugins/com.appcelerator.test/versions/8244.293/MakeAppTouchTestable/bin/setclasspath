@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Finding the absolute path of lib directory
+LIB_DIR=$(cd "$(dirname "$0")/../lib" && pwd)
+
+# Add the "lib" directory itself, to pick up any files in there
+_CLASSPATH=$_CLASSPATH:"$LIB_DIR"
+
+# Add every JAR file in the "lib" directory
+for j in $( ls "$LIB_DIR" ); do
+	_CLASSPATH=$_CLASSPATH:"$LIB_DIR/$j"
+done
+
+# Use bundled JRE if present.
+MACHINE_TYPE=`uname -m`
+if [ "${MACHINE_TYPE}" = "x86_64" ]; then
+  if [ -x "$LIB_DIR/jre_x64/bin/java" ]; then
+    JAVA="$LIB_DIR/jre_x64/bin/java"
+  fi
+else
+  if [ -x "$LIB_DIR/jre/bin/java" ]; then
+    JAVA="$LIB_DIR/jre/bin/java"
+  fi
+fi
+
+# Directory for native code libraries
+_LIBRARY_PATH=$LIB_DIR
+
+if [[ "$0" != *Conductor ]]; then
+  # Setup the JVM
+  if [ "x$JAVA" = "x" ]; then
+	if [ "x$JAVA_HOME" != "x" ]; then
+  	  JAVA="$JAVA_HOME/bin/java"
+	else
+  	  JAVA="java"
+	fi
+  fi
+
+  # Find out the version of Java installed on the system
+  JAVA_VERSION=$(java -version 2>&1 | sed 's/java version "\(.*\)\.\(.*\)\..*"/\1\2/; 1q')
+  if [[ "$JAVA_VERSION" -eq 16  ]]; then
+	echo $(basename $0) requires Java 7.
+	exit 1
+  fi
+fi

@@ -1,0 +1,108 @@
+<h1>Crittercism Module</h1>
+<h2>Description</h2>
+<p>The Crittercism module provides you with real-time crash reporting and app monitoring for your titanium powered mobile apps. This module enables the enterprise level support for monitoring critical errors and provides valuable diagnostic information to rapidly debug issues that occur in production from the Crittercism <a href="http://www.crittercism.com">web portal</a>.</p>
+<h2>Installing the Crittercism Module</h2>
+<p>First you'll need to import the module so we can access it in your Titanium project. To do this follow these steps:</p>
+<ol>
+<li>Select 'Help' from the top Menu</li>
+<li>Near the bottom you should find "Install Titanium Module...". Select This.</li>
+<li>Follow On-Screen instructions and import to whichever scope you wish (we recommend global scope)</li>
+</ol>
+<p>Another option is to follow the instructions <a href="https://wiki.appcelerator.org/display/tis/Using+Titanium+Modules">here</a> with the following information:</p>
+<p><strong>Version</strong>: 1.0.11
+<strong>Platform</strong>: android and/or iphone
+<strong>Module Name</strong>: com.appcelerator.apm</p>
+<h2>Accessing the Crittercism Module</h2>
+<p>To access this module from JavaScript, you need to created a reference by doing the following:</p>
+<pre><code>var crittercism = require("com.appcelerator.apm");
+</code></pre>
+<p>The crittercism variable is a reference to the Module object and gains you access to all the Client APIs.</p>
+<h2>Methods</h2>
+<h3>crittercism.init([Optional]String AppID, [Optional: Android Only]JSONObject configJSON)</h3>
+<p>Returns void. Initializes crittercism with your AppID (found in the App Settings page of your app).</p>
+<p>Currently, the configuration object accepts the following keys:</p>
+<ul>
+<li>
+<p><strong>notificationTitle</strong>: String parameter. Default is "Developer Reply". This parameter determines the title shown on notification alerts sent from Crittercism.</p>
+</li>
+<li>
+<p><strong>shouldCollectLogcat</strong>: Boolean parameter. Default is false. If true, Crittercism will send logcat data for your application on Jelly Bean devices.</p>
+</li>
+<li>
+<p><strong>customVersionName</strong>: String parameter. If this parameter is set, a customized version name will appear in the version list shown for uploading Proguard mappings. <strong>Android Only</strong></p>
+</li>
+</ul>
+<p>See <strong> Usage </strong> below for an example of how this is done.</p>
+<h3>crittercism.leaveBreadcrumb(String breadcrumb)</h3>
+<p><em>Returns</em> void. Leaves a breadcrumb of 140 character which up to 100 are collected at time of error and passed to the Crittercism service.</p>
+<p>See <strong> Usage </strong> below for an example of how this is done.</p>
+<p>To see more on Breadcrumbs, check out the <a href="http://support.crittercism.com/customer/portal/articles/675671-getting-started-with-breadcrumbs">Getting Started with Breadcrumbs</a> docs.</p>
+<h3>crittercism.setUsername(String username)</h3>
+<p><em>Returns</em> void. Accepts a single string containing the username. Only updates if there has been a change to the username from previous settings.</p>
+<p>To see more on Metadata, check out the <a href="http://support.crittercism.com/customer/portal/articles/675611-getting-started-with-user-metadata">Getting Started with Metadata</a> docs.</p>
+<p>See <strong> Usage </strong> below for an example of how this is done.</p>
+<h3>crittercism.setMetadata(String key, String value)</h3>
+<p>Note: Values can be arrays or dictionaries converted to Strings.</p>
+<p><em>Returns</em> void. Used to set a single pair of arbitrary metadata by passing in a key and value. Used to attach arbitrary metadata to a user. The data will be stored in a dictionary and displayed on the developer portal when viewing a user profile.</p>
+<p>To see more on Metadata, check out the <a href="http://support.crittercism.com/customer/portal/articles/675611-getting-started-with-user-metadata">Getting Started with Metadata</a> docs.</p>
+<p>See <strong> Usage </strong> below for an example of how this is done.</p>
+<h3>crittercism.logHandledException(Error error)</h3>
+<p><em>Returns</em> void. Accepts a JSON object with two properties describing the error.</p>
+<p>To see more on Handled Exceptions, check out the <a href="http://support.crittercism.com/customer/portal/articles/685301-getting-started-with-handled-exceptions">Getting Started with Handled Exceptions</a> docs.</p>
+<p>See <strong> Usage </strong> below for an example of how this is done.</p>
+<h3>crittercism.setOptOutStatus(Boolean optOutStatus)</h3>
+<p><em>Returns</em> void. Set the users opt out status from sending <strong>any and all</strong> information to the Crittercism service.</p>
+<h3>crittercism.getOptOutStatus()</h3>
+<p><em>Returns</em> a boolean of the opt out status.</p>
+<h3>crittercism.didCrashOnLastAppLoad()</h3>
+<p><em>Returns</em> a boolean if the app crashed on the previous session.</p>
+<h3>crittercism.getNotificationTitle() ### (Android Only) DEPRECATED</h3>
+<p><em>Returns</em> a string consisting of the notification title.</p>
+<h3>crittercism.getUUID()</h3>
+<p><em>Returns</em> a string consisting of the UUID generated by Crittercism for user identification.</p>
+<h2>Events</h2>
+<h3>serviceready (Android Only)</h3>
+<p>Will be fired when properties of the service are ready.</p>
+<p>Wait for this event before calling <code>getOptOutStatus</code>, <code>didCrashOnLastAppLoad</code>, or <code>getUUID</code>.</p>
+<h4>Example</h4>
+<pre><code>crittercism.addEventListener('serviceready', function() {
+    Ti.API.info('didCrashOnLastAppLoad: ' + crittercism.didCrashOnLastAppLoad());
+});
+</code></pre>
+<h2>Usage</h2>
+<h3>crittercism.init(String AppID, JSONObject configJSON)</h3>
+<pre><code>crittercism.init("&lt;Crittercism_App_ID&gt;", {
+    "notificationTitle": "Crittertastic Title",
+    "shouldCollectLogcat": true,
+    "customVersionName": "1.2.4" // Android only. For iOS set the CRAlternateVersion in info.plist to the customVersionName
+});
+</code></pre>
+<h3>crittercism.leaveBreadcrumb(String breadcrumb)</h3>
+<pre><code>// Using a breadcrumb to track progress through the app
+crittercism.leaveBreadcrumb("App // someMethod // finishedProcess");
+</code></pre>
+<h3>crittercism.setUsername(String username)</h3>
+<pre><code>// Sets the username
+crittercism.setUsername("TheCritter");
+</code></pre>
+<h3>crittercism.setMetadata(String key, Object value)</h3>
+<pre><code>// Updates the game level
+crittercism.setMetadata("gameLevel", 5);
+crittercism.setMetadata("playerID", 9491824);
+</code></pre>
+<h3>crittercism.logHandledException(Error error)</h3>
+<pre><code>// A simple example of capturing an error
+try {
+    var err = new Error("My Awesome Caught Error!");
+    throw err
+} catch (err){
+    crittercism.logHandledException({
+        name: err.name,
+        message: err.message,
+        line:err.lineNumber
+    });
+}
+</code></pre>
+<h2>Author</h2>
+<p>Crittercism Inc.</p>
+<h2>Link References</h2>

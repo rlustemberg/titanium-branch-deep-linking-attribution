@@ -91,60 +91,55 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	// Public Methods
 
 	@Kroll.method
-	public void initBranchInstance()
-	{
-        branchInstance_ = Branch.getAutoInstance(TiApplication.getInstance());
-
-	}
-
-	@Kroll.method
 	public void updateIntent(IntentProxy obj)
 	{
 		///activity life cycle
 		Log.d(LCAT, "update intent");
-		Log.d(LCAT, obj.getIntent().toString());
 		Uri data = obj.getIntent().getData();
 		Intent intent = obj.getIntent();
 		PrefHelper prefHelper_ = PrefHelper.getInstance(TiApplication.getInstance());
+		if(data != null){
+			
 
-        if (data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey()) != null) {
-            prefHelper_.setLinkClickIdentifier(data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey()));
-            String paramString = "link_click_id=" + data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey());
-            String uriString = null;
-            if (intent != null) {
-                uriString = intent.getDataString();
-            }
-            if (data.getQuery().length() == paramString.length()) {
-                paramString = "\\?" + paramString;
-            } else if (uriString != null && (uriString.length() - paramString.length()) == uriString.indexOf(paramString)) {
-                paramString = "&" + paramString;
-            } else {
-                paramString = paramString + "&";
-            }
-            if (uriString != null) {
-                Uri newData = Uri.parse(uriString.replaceFirst(paramString, ""));
-                intent.setData(newData);
-            } else {
-                Log.w(TAG, "Branch Warning. URI for the launcher activity is null. Please make sure that intent data is not set to null before calling Branch#InitSession ");
-            }
-        } else {
-            // Check if the clicked url is an app link pointing to this app
-            String scheme = data.getScheme();
-            if (scheme != null && intent != null) {
-                // On Launching app from the recent apps, Android Start the app with the original intent data. So up in opening app from recent list
-                // Intent will have App link in data and lead to issue of getting wrong parameters. (In case of link click id since we are  looking for actual link click on back end this case will never happen)
-                if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == 0) {
-                    if ((scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))
-                            && data.getHost() != null && data.getHost().length() > 0 && data.getQueryParameter(Defines.Jsonkey.BranchLinkUsed.getKey()) == null) {
-                        prefHelper_.setAppLink(data.toString());
-                        String uriString = data.toString();
-                        uriString += uriString.contains("?") ? "&" : "?";
-                        uriString += Defines.Jsonkey.BranchLinkUsed.getKey() + "=true";
-                        intent.setData(Uri.parse(uriString));
-                    }
-                }
-            }
-        }
+	        if (data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey()) != null) {
+	            prefHelper_.setLinkClickIdentifier(data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey()));
+	            String paramString = "link_click_id=" + data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey());
+	            String uriString = null;
+	            if (intent != null) {
+	                uriString = intent.getDataString();
+	            }
+	            if (data.getQuery().length() == paramString.length()) {
+	                paramString = "\\?" + paramString;
+	            } else if (uriString != null && (uriString.length() - paramString.length()) == uriString.indexOf(paramString)) {
+	                paramString = "&" + paramString;
+	            } else {
+	                paramString = paramString + "&";
+	            }
+	            if (uriString != null) {
+	                Uri newData = Uri.parse(uriString.replaceFirst(paramString, ""));
+	                intent.setData(newData);
+	            } else {
+	                Log.w(TAG, "Branch Warning. URI for the launcher activity is null. Please make sure that intent data is not set to null before calling Branch#InitSession ");
+	            }
+	        } else {
+	            // Check if the clicked url is an app link pointing to this app
+	            String scheme = data.getScheme();
+	            if (scheme != null && intent != null) {
+	                // On Launching app from the recent apps, Android Start the app with the original intent data. So up in opening app from recent list
+	                // Intent will have App link in data and lead to issue of getting wrong parameters. (In case of link click id since we are  looking for actual link click on back end this case will never happen)
+	                if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == 0) {
+	                    if ((scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))
+	                            && data.getHost() != null && data.getHost().length() > 0 && data.getQueryParameter(Defines.Jsonkey.BranchLinkUsed.getKey()) == null) {
+	                        prefHelper_.setAppLink(data.toString());
+	                        String uriString = data.toString();
+	                        uriString += uriString.contains("?") ? "&" : "?";
+	                        uriString += Defines.Jsonkey.BranchLinkUsed.getKey() + "=true";
+	                        intent.setData(Uri.parse(uriString));
+	                    }
+	                }
+	            }
+	        }
+    	}
 	}
 
 	@Kroll.method

@@ -451,20 +451,6 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
     return [[self getInstance] getLongURLWithParams:params];
 }
 
-- (NSString *)getContentUrlWithParams:(id)args
-{
-    ENSURE_ARG_COUNT(args, 2);
-    ENSURE_TYPE([args objectAtIndex:0], NSDictionary);
-    ENSURE_TYPE([args objectAtIndex:1], NSString);
-
-    NSDictionary *params = [args objectAtIndex:0];
-    NSString *channel = [args objectAtIndex:1];
-
-    Branch *branch = [self getInstance];
-
-    return [branch getContentUrlWithParams:params andChannel:channel];
-}
-
 - (void)getBranchActivityItemWithParams:(id)args
 {
     ENSURE_SINGLE_ARG(args, NSDictionary);

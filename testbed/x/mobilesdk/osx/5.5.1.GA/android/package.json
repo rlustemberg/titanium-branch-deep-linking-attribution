@@ -1,0 +1,31 @@
+{
+	"name": "titanium-mobile-android",
+	"title": "Android",
+	"description": "Appcelerator Titanium Mobile Android",
+	"keywords": [
+		"appcelerator",
+		"titanium",
+		"mobile",
+		"android"
+	],
+	"version": "5.5.1",
+	"author": "Appcelerator, Inc. <info@appcelerator.com>",
+	"maintainers": [
+		"Chris Barber <cbarber@appcelerator.com>"
+	],
+	"minSDKVersion": "14",
+	"vendorDependencies": {
+		"android sdk": "23",
+		"android build tools": ">=17 <=23.x",
+		"android platform tools": ">=17 <=23.x",
+		"android tools": "<=24.3.x",
+		"android ndk": ">=r8e <=r9",
+		"node": ">=0.10.0 <=0.12.x",
+		"java": "<=1.8.x"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/appcelerator/titanium_mobile.git"
+	},
+	"license": "Apache-2.0"
+}

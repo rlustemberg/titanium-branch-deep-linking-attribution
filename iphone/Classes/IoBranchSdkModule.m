@@ -17,6 +17,7 @@
 #import "Branch-SDK/Branch.h"
 
 #import <objc/runtime.h>
+#import "JRSwizzle.h"
 
 @implementation TiApp (Branch)
 
@@ -31,10 +32,33 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 
     return YES;
 }
+- (BOOL)iobranchApplication:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity
+ restorationHandler:(void (^)(NSArray *restorableObjects))restorationHandler
+{
+    NSLog(@"[INFO] -- YourModule#application:continueUserActivity:restorationHandler --");
+
+    BOOL result = [[Branch getInstance] continueUserActivity:userActivity];
+    NSLog(result ? @"Yes" : @"No");
+
+    [self iobranchApplication:application continueUserActivity:userActivity restorationHandler:restorationHandler];
+
+    return YES;
+}
 
 @end
 
 @implementation IoBranchSdkModule
+
++ (void)load {
+    NSError *error = nil;
+    [TiApp jr_swizzleMethod:@selector(application:continueUserActivity:restorationHandler:)
+                 withMethod:@selector(iobranchApplication:continueUserActivity:restorationHandler:)
+                      error:&error];
+    
+    if(error)
+        NSLog(@"[WARN] Cannot swizzle application:continueUserActivity:restorationHandler: %@", error);
+
+}
 
 #pragma mark - Swizzling Methods
 
@@ -125,16 +149,7 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
         // switch implemention of openURL method
         method_exchangeImplementations(m1, u1);
 
-        __block IMP implementation = [IoBranchSdkModule swizzleClassWithClassname:NSStringFromClass(objectClass) originalSelector:@selector(application:continueUserActivity:restorationHandler:) block:^BOOL (id blockSelf, UIApplication *application, NSUserActivity *userActivity, id restorationHandler){
-            BOOL result = [[Branch getInstance] continueUserActivity:userActivity];
-            
-            if (!result && implementation) {
-                BOOL (*func)() = (void *)implementation;
-                return func(blockSelf, @selector(application:continueUserActivity:restorationHandler:), application, userActivity, restorationHandler);
-            }
-            
-            return NO;
-        }];
+        
 
         objc_registerClassPair(modDelegate);
     }
@@ -599,28 +614,6 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 }
 
 
-#pragma mark - continue user activity
 
-- (void)continueUserActivity:(id)args
-{
-    NSLog(@"[INFO] module continueUserActivity - %@", args);
-
-    ENSURE_ARG_COUNT(args, 3);
-    ENSURE_TYPE([args objectAtIndex:0], NSString);
-    ENSURE_TYPE([args objectAtIndex:1], NSString);
-    ENSURE_TYPE([args objectAtIndex:2], NSDictionary);
-
-    NSString *activityType = (NSString *)[args objectAtIndex:0];
-    NSURL *webpageURL = [NSURL URLWithString:(NSString *)[args objectAtIndex:1]];
-    NSDictionary *userInfo = (NSDictionary*)[args objectAtIndex:2];
-
-    NSUserActivity *userActivity = [[NSUserActivity alloc] initWithActivityType:activityType];
-    [userActivity setWebpageURL:webpageURL];
-    [userActivity setUserInfo:userInfo];
-
-    Branch *branch = [self getInstance];
-
-    [branch continueUserActivity:userActivity];
-}
 
 @end

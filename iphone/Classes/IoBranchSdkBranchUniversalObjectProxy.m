@@ -159,7 +159,7 @@
     }
 
     for (id key in arg2) {
-        [props addControlParam:key withValue:[arg1 objectForKey:key]];
+        [props addControlParam:key withValue:[arg2 objectForKey:key]];
     }
 
     [self.branchUniversalObj getShortUrlWithLinkProperties:props andCallback:^(NSString *url, NSError *error) {
@@ -171,6 +171,7 @@
         KrollEvent *invocationEvent = [[KrollEvent alloc] initWithCallback:callback eventObject:propertiesDict thisObject:self];
         
         [[callback context] enqueue:invocationEvent];
+        [self fireEvent:@"bio:generateShortUrl" withObject:propertiesDict];
 
     }];
 }

@@ -19,6 +19,9 @@
 #import <objc/runtime.h>
 #import "JRSwizzle.h"
 
+#undef USE_TI_APPIOS
+#define USE_TI_APPIOS 1
+
 @implementation TiApp (Branch)
 
 bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* application, NSURL* url, NSString* sourceApplication, id annotation) {
@@ -612,7 +615,6 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
         [branch userCompletedAction:name];
     }
 }
-
 
 
 

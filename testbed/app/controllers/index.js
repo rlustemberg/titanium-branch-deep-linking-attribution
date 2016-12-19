@@ -45,7 +45,17 @@ $.initializeViews = function() {
 };
 
 $.initializeHandlers = function() {
-    
+    if (OS_IOS) {
+        
+        Ti.App.iOS.addEventListener('continueactivity', function(e) {
+            Ti.API.info(e.activityType)
+            Ti.API.info("inside continueactivity: " + JSON.stringify(e));
+            
+        });
+
+       
+    } 
+
     $.getSessionButton.addEventListener('click', $.onGetSessionButtonClicked);
     $.getInstallSessionButton.addEventListener('click', $.onGetInstallSessionButtonClicked);
     $.setIndentityButton.addEventListener('click', $.onSetIdentityButtonClicked);

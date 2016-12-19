@@ -47,7 +47,32 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 
     return YES;
 }
+- (BOOL)iobranchApplication:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions_
+{
+    Branch *branch = [Branch getInstance];
+    NSLog(@"[INFO] -- YourModule#application:didFinishLaunchingWithOptions --");
+    NSLog(@"[INFO] -- %@",launchOptions_);
 
+    [branch accountForFacebookSDKPreventingAppLaunch];
+
+    [branch initSessionWithLaunchOptions:launchOptions_
+        automaticallyDisplayDeepLinkController:NO
+        deepLinkHandler:^(NSDictionary *params, NSError *error) {
+        NSLog(@"initSession1 succeeded with params: %@", params);
+        if (!error) {
+            NSLog(@"initSession2 succeeded with params: %@", params);
+            //[self fireEvent:@"bio:initSession" withObject:params];
+        }
+        else {
+            NSLog(@"initSession failed %@", error);
+            //[self fireEvent:@"bio:initSession" withObject:@{@"error":[error localizedDescription]}];
+        }
+    }];
+
+    [self iobranchApplication:application didFinishLaunchingWithOptions:launchOptions_];
+    return YES;
+
+}
 @end
 
 @implementation IoBranchSdkModule
@@ -60,6 +85,14 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
     
     if(error)
         NSLog(@"[WARN] Cannot swizzle application:continueUserActivity:restorationHandler: %@", error);
+
+    NSError *error2 = nil;
+    [TiApp jr_swizzleMethod:@selector(application:didFinishLaunchingWithOptions:)
+                 withMethod:@selector(iobranchApplication:didFinishLaunchingWithOptions:)
+                      error:&error];
+    
+    if(error2)
+        NSLog(@"[WARN] Cannot swizzle iobranchApplicationDidFinishLaunching %@", error2);
 
 }
 
@@ -202,26 +235,6 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 }
 
 
-#pragma mark - Test Methods
-
--(id)example:(id)args
-{
-    // example method
-    return @"hello world";
-}
-
--(id)exampleProp
-{
-    // example property getter
-    return @"hello world";
-}
-
--(void)setExampleProp:(id)value
-{
-    // example property setter
-}
-
-#pragma mark Public APIs
 #pragma mark - Global Instance Accessors
 
 - (Branch *)getInstance
@@ -247,16 +260,22 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 #pragma mark - InitSession Permutation methods
 
 - (void)initSession:(id)args
-{
-    Branch *branch = [self getInstance];
+{   
+    NSLog(@"www initSession");
+    Branch *branch = [Branch getInstance];
 
     NSDictionary *launchOptions = [[TiApp app] launchOptions];
-
-    [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
+    
+    [branch initSessionWithLaunchOptions:launchOptions
+        automaticallyDisplayDeepLinkController:NO
+        deepLinkHandler:^(NSDictionary *params, NSError *error) {
+        NSLog(@"initSession succeeded with params: %@", params);
         if (!error) {
+            NSLog(@"initSession succeeded with params: %@", params);
             [self fireEvent:@"bio:initSession" withObject:params];
         }
         else {
+            NSLog(@"initSession failed %@", error);
             [self fireEvent:@"bio:initSession" withObject:@{@"error":[error localizedDescription]}];
         }
     }];
@@ -391,30 +410,30 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 }
 
 
-#pragma mark - register controller
+// #pragma mark - register controller
 
-- (void)registerDeepLinkController:(id)args
-{
-    ENSURE_SINGLE_ARG(args, NSString);
+// - (void)registerDeepLinkController:(id)args
+// {
+//     ENSURE_SINGLE_ARG(args, NSString);
 
-    UIViewController <BranchDeepLinkingController> *controller = (UIViewController <BranchDeepLinkingController>*)[TiApp app].controller;
-    Branch *branch = [self getInstance];
+//     UIViewController <BranchDeepLinkingController> *controller = (UIViewController <BranchDeepLinkingController>*)[TiApp app].controller;
+//     Branch *branch = [self getInstance];
 
-    [branch registerDeepLinkController:controller forKey:args];
-}
+//     [branch registerDeepLinkController:controller forKey:args];
+// }
 
 
-#pragma mark - handle deep link
+// #pragma mark - handle deep link
 
-- (id)handleDeepLink:(id)args
-{
-    ENSURE_SINGLE_ARG(args, NSString);
-    NSString *arg = [args objectAtIndex:0];
-    NSURL *url = [NSURL URLWithString:arg];
+// - (id)handleDeepLink:(id)args
+// {
+//     ENSURE_SINGLE_ARG(args, NSString);
+//     NSString *arg = [args objectAtIndex:0];
+//     NSURL *url = [NSURL URLWithString:arg];
 
-    Branch *branch = [self getInstance];
-    return NUMBOOL([branch handleDeepLink:url]);
-}
+//     Branch *branch = [self getInstance];
+//     return NUMBOOL([branch handleDeepLink:url]);
+// }
 
 
 #pragma mark - URL methods

@@ -86,13 +86,13 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
     if(error)
         NSLog(@"[WARN] Cannot swizzle application:continueUserActivity:restorationHandler: %@", error);
 
-    NSError *error2 = nil;
-    [TiApp jr_swizzleMethod:@selector(application:didFinishLaunchingWithOptions:)
-                 withMethod:@selector(iobranchApplication:didFinishLaunchingWithOptions:)
-                      error:&error];
+    // NSError *error2 = nil;
+    // [TiApp jr_swizzleMethod:@selector(application:didFinishLaunchingWithOptions:)
+    //              withMethod:@selector(iobranchApplication:didFinishLaunchingWithOptions:)
+    //                   error:&error];
     
-    if(error2)
-        NSLog(@"[WARN] Cannot swizzle iobranchApplicationDidFinishLaunching %@", error2);
+    // if(error2)
+    //     NSLog(@"[WARN] Cannot swizzle iobranchApplicationDidFinishLaunching %@", error2);
 
 }
 
@@ -265,6 +265,7 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
     Branch *branch = [Branch getInstance];
 
     NSDictionary *launchOptions = [[TiApp app] launchOptions];
+    [branch accountForFacebookSDKPreventingAppLaunch];
     
     [branch initSessionWithLaunchOptions:launchOptions
         automaticallyDisplayDeepLinkController:NO

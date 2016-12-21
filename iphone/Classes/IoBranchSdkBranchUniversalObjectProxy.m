@@ -145,7 +145,7 @@
 
     NSDictionary *arg1 = [args objectAtIndex:0];
     NSDictionary *arg2 = [args objectAtIndex:1];
-    KrollCallback *callback = [args objectAtIndex:2];
+    KrollCallback *callback = [args count] == 3 ? [args objectAtIndex:2] : nil;
 
     BranchLinkProperties *props = [[BranchLinkProperties alloc] init];
 
@@ -159,7 +159,7 @@
     }
 
     for (id key in arg2) {
-        [props addControlParam:key withValue:[arg2 objectForKey:key]];
+        [props addControlParam:key withValue:[arg1 objectForKey:key]];
     }
 
     [self.branchUniversalObj getShortUrlWithLinkProperties:props andCallback:^(NSString *url, NSError *error) {
@@ -168,10 +168,20 @@
         bool cancelled = NO;
 
         NSDictionary *propertiesDict = [[NSDictionary alloc] initWithObjectsAndKeys:url, @"generatedLink", [error localizedDescription], @"error", nil];
-        KrollEvent *invocationEvent = [[KrollEvent alloc] initWithCallback:callback eventObject:propertiesDict thisObject:self];
         
-        [[callback context] enqueue:invocationEvent];
-        [self fireEvent:@"bio:generateShortUrl" withObject:propertiesDict];
+        if (callback != nil) {
+
+            KrollEvent *invocationEvent = [[KrollEvent alloc] initWithCallback:callback eventObject:propertiesDict thisObject:self];
+            
+            [[callback context] enqueue:invocationEvent];
+        }
+
+        if (error == nil) {
+            [self fireEvent:@"bio:generateShortUrl" withObject:url];
+        }
+        else {
+            [self fireEvent:@"bio:generateShortUrl" withObject:@{@"error":[error localizedDescription]}];
+        }
 
     }];
 }

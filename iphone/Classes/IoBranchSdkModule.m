@@ -47,13 +47,14 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 
     return YES;
 }
+
 - (BOOL)iobranchApplication:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions_
 {
     Branch *branch = [Branch getInstance];
     NSLog(@"[INFO] -- YourModule#application:didFinishLaunchingWithOptions --");
     NSLog(@"[INFO] -- %@",launchOptions_);
 
-    [branch accountForFacebookSDKPreventingAppLaunch];
+    //[branch accountForFacebookSDKPreventingAppLaunch];
 
     [branch initSessionWithLaunchOptions:launchOptions_
         automaticallyDisplayDeepLinkController:NO
@@ -85,6 +86,7 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
     
     if(error)
         NSLog(@"[WARN] Cannot swizzle application:continueUserActivity:restorationHandler: %@", error);
+
 
     // NSError *error2 = nil;
     // [TiApp jr_swizzleMethod:@selector(application:didFinishLaunchingWithOptions:)
@@ -266,7 +268,7 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
 
     NSDictionary *launchOptions = [[TiApp app] launchOptions];
     [branch accountForFacebookSDKPreventingAppLaunch];
-    
+
     [branch initSessionWithLaunchOptions:launchOptions
         automaticallyDisplayDeepLinkController:NO
         deepLinkHandler:^(NSDictionary *params, NSError *error) {
@@ -636,6 +638,29 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
     }
 }
 
+#pragma mark - continue user activity
 
+- (void)continueUserActivity:(id)args
+{
+
+    NSLog(@"[INFO] module continueUserActivity - %@", args);
+
+    // ENSURE_ARG_COUNT(args, 3);
+    // ENSURE_TYPE([args objectAtIndex:0], NSString);
+    // ENSURE_TYPE([args objectAtIndex:1], NSString);
+    // ENSURE_TYPE([args objectAtIndex:2], NSDictionary);
+
+    // NSString *activityType = (NSString *)[args objectAtIndex:0];
+    // NSURL *webpageURL = [NSURL URLWithString:(NSString *)[args objectAtIndex:1]];
+    // NSDictionary *userInfo = (NSDictionary*)[args objectAtIndex:2];
+
+    // NSUserActivity *userActivity = [[NSUserActivity alloc] initWithActivityType:activityType];
+    // [userActivity setWebpageURL:webpageURL];
+    // [userActivity setUserInfo:userInfo];
+
+    // Branch *branch = [self getInstance];
+
+    // [branch continueUserActivity:userActivity];
+}
 
 @end

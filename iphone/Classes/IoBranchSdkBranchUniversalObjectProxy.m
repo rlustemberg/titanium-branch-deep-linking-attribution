@@ -177,7 +177,7 @@
         }
 
         if (error == nil) {
-            [self fireEvent:@"bio:generateShortUrl" withObject:url];
+            [self fireEvent:@"bio:generateShortUrl" withObject:propertiesDict];
         }
         else {
             [self fireEvent:@"bio:generateShortUrl" withObject:@{@"error":[error localizedDescription]}];

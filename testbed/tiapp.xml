@@ -7,12 +7,12 @@
   <publisher>Branch Metrics Ltd.</publisher>
   <url>http://www.branch.io</url>
   <description/>
-  <copyright>2016</copyright>
+  <copyright>2017</copyright>
   <icon>appicon.png</icon>
   <fullscreen>false</fullscreen>
   <navbar-hidden>false</navbar-hidden>
   <analytics>true</analytics>
-  <guid>b87bfa4d-d745-494e-9467-5e2fd1f49586</guid>
+  <guid>36face37-2d38-457d-9ddd-651dbd5ac72d</guid>
   <property name="ti.ui.defaultunit" type="string">dp</property>
   <ios>
     <team-id>4XE8MVRXHY</team-id>
@@ -63,42 +63,39 @@
       <uses-permission android:name="android.permission.INTERNET"/>
       <application>
         <!-- Set to true to use Branch_Test_Key -->
-        <meta-data android:name="io.branch.sdk.TestMode" android:value="true" />
+        <meta-data android:name="io.branch.sdk.TestMode" android:value="true"/>
         <!-- Add this meta-data below, and change "key_live_kbDcpHTPpJquSpTeJFVqBdenDAcko3QG" to your actual live Branch key -->
-        <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_kbDcpHTPpJquSpTeJFVqBdenDAcko3QG" />
+        <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_jixgYiNQ5mIoxwuSag5U7niavqp6LiFW"/>
         <!-- For your test app, if you have one; Again, use your actual test Branch key -->
-        <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_live_kbDcpHTPpJquSpTeJFVqBdenDAcko3QG" />
-        <activity
-          android:name=".TestbedActivity"
-          android:label="@string/app_name"
-          android:launchMode="singleTask"
-          android:alwaysRetainTaskState="true" >
+        <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_jmzd0lUR9gIiAAEQfo42onbcExe1MeHg"/>
+        <activity android:name=".TestbedActivity" android:label="@string/app_name" android:launchMode="singleTask" android:alwaysRetainTaskState="true">
           <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
+            <action android:name="android.intent.action.MAIN"/>
+            <category android:name="android.intent.category.LAUNCHER"/>
           </intent-filter>
           <!-- Intent filter for deep links -->
           <intent-filter>
-            <data android:scheme="testbed" android:host="open" />
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="jdtest" android:host="open"/>
+            <action android:name="android.intent.action.VIEW"/>
+            <category android:name="android.intent.category.DEFAULT"/>
+            <category android:name="android.intent.category.BROWSABLE"/>
           </intent-filter>
           <!-- Intent filter for app links -->
           <intent-filter android:autoVerify="true">
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="https" android:host="bnc.lt" android:pathPrefix="/live_app_alpha_encoded_id" /> <!-- live_app_alpha_encoded_id can be obtained from the Branch Dashboard here: https://dashboard.branch.io/#/settings/link -->
-            <data android:scheme="https" android:host="bnc.lt" android:pathPrefix="/test_app_alpha_encoded_id" /> <!-- test_app_alpha_encoded_id can be obtained from the Branch Dashboard here: https://dashboard.branch.io/#/settings/link -->
+            <action android:name="android.intent.action.VIEW"/>
+            <category android:name="android.intent.category.DEFAULT"/>
+            <category android:name="android.intent.category.BROWSABLE"/>
+            <data android:scheme="https" android:host="bnc.lt" android:pathPrefix="/live_app_alpha_encoded_id"/>
+            <!-- live_app_alpha_encoded_id can be obtained from the Branch Dashboard here: https://dashboard.branch.io/#/settings/link -->
+            <data android:scheme="https" android:host="bnc.lt" android:pathPrefix="/test_app_alpha_encoded_id"/>
+            <!-- test_app_alpha_encoded_id can be obtained from the Branch Dashboard here: https://dashboard.branch.io/#/settings/link -->
           </intent-filter>
         </activity>
-
       </application>
     </manifest>
   </android>
   <mobileweb>
-    <precache></precache>
+    <precache/>
     <splash>
       <enabled>true</enabled>
       <inline-css-images>true</inline-css-images>
@@ -107,7 +104,7 @@
   </mobileweb>
   <modules>
     <module platform="commonjs">ti.cloud</module>
-    <module platform="android">io.branch.sdk</module>
+    <module platform="android_ti6x">io.branch.sdk</module>
     <module platform="iphone">io.branch.sdk</module>
   </modules>
   <deployment-targets>
@@ -115,11 +112,11 @@
     <target device="ipad">true</target>
     <target device="iphone">true</target>
   </deployment-targets>
-  <sdk-version>6.1.0.v20160915135333</sdk-version>
+  <sdk-version>6.1.0.GA</sdk-version>
   <plugins>
     <plugin version="1.0">ti.alloy</plugin>
   </plugins>
-  <property name="appc-app-id" type="string">564d8181d0912c913dd1b866</property>
+  <property name="appc-app-id" type="string">5936f03025997077113ee6e8</property>
   <property name="acs-authbase-url-development" type="string">https://secure-identity.cloud.appcelerator.com</property>
   <property name="acs-base-url-development" type="string">https://api.cloud.appcelerator.com</property>
   <property name="acs-oauth-secret-development" type="string">fuKyk1VFlRBXm3CBW0C8boJRMb2Ubd1d</property>

@@ -19,6 +19,9 @@
 #import "BNCServerRequestQueue.h"
 #import "BranchActivityItemProvider.h"
 #import "BranchDeepLinkingController.h"
+#import "BNCCommerceEvent.h"
+#import "BranchShareLink.h"
+#import "BNCXcode7Support.h"
 
 /**
  `Branch` is the primary interface of the Branch iOS SDK. Currently, all interactions you will make are funneled through this class. It is not meant to be instantiated or subclassed, usage should be limited to the global instance.
@@ -30,7 +33,7 @@
 /// @name Constants
 ///----------------
 
-#pragma mark - Branch Link Features
+#pragma mark Branch Link Features
 
 /**
  ## Branch Link Features
@@ -336,11 +339,44 @@ typedef NS_ENUM(NSUInteger, BranchCreditHistoryOrder) {
 - (BOOL)handleDeepLink:(NSURL *)url;
 
 /**
- Allow Branch to handle restoration from an NSUserActivity, returning whether or not it was from a Branch link.
+ Allow Branch to handle restoration from an NSUserActivity, returning whether or not it was
+ from a Branch link.
  
  @param userActivity The NSUserActivity that caused the app to be opened.
  */
 - (BOOL)continueUserActivity:(NSUserActivity *)userActivity;
+
+/**
+ Call this method from inside your app delegate's `application:openURL:sourceApplication:annotation:`
+ method with the so that Branch can open the passed URL.
+
+ @param application         The application that was passed to your app delegate.
+ @param url                 The URL that was passed to your app delegate.
+ @param sourceApplication   The sourceApplication that was passed to your app delegate.
+ @param annotation          The annotation that was passed to your app delegate.
+ @return                    Returns `YES` if Branch handled the passed URL.
+ */
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation;
+
+/**
+ Call this method from inside your app delegate's `application:openURL:options:`
+ method with the so that Branch can open the passed URL.
+ 
+ This method is functionally the same as calling the Branch method
+ `application:openURL:sourceApplication:annotation:`. This method matches the new Apple appDelegate
+ method for convenience.
+
+ @param application         The application that was passed to your app delegate.
+ @param url                 The URL that was passed to your app delegate.
+ @param options             The options dictionary that was passed to your app delegate.
+ @return                    Returns `YES` if Branch handled the passed URL.
+ */
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options;
 
 ///--------------------------------
 /// @name Push Notification Support
@@ -520,6 +556,13 @@ typedef NS_ENUM(NSUInteger, BranchCreditHistoryOrder) {
 - (NSDictionary *)getLatestReferringParams;
 
 /**
+ Returns the most recent referral parameters for this user. An empty object can be returned.
+ This call blocks the calling thread until the latest results are available.
+ @warning This call blocks the calling thread.
+ */
+- (NSDictionary*) getLatestReferringParamsSynchronous;
+
+/**
  Tells Branch to act as though initSession hadn't been called. Will require another open call (this is done automatically, internally).
  */
 - (void)resetUserSession;
@@ -689,6 +732,22 @@ typedef NS_ENUM(NSUInteger, BranchCreditHistoryOrder) {
  @param branchViewCallback Callback for Branch view state
  */
 - (void)userCompletedAction:(NSString *)action withState:(NSDictionary *)state withDelegate:(id)branchViewCallback;
+
+/**
+ Sends a user commerce event to the server.
+
+ Use commerce events to track when a user purchases an item in your online store, 
+ makes an in-app purchase, or buys a subscription.  The commerce events are tracked in 
+ the Branch dashboard along with your other events so you can judge the effectiveness of
+ campaigns and other analytics.
+
+ @param commerceEvent 	The BNCCommerceEvent that describes the purchase.
+ @param metadata        Optional metadata you may want add to the event.
+ @param completion 		The optional completion callback.
+ */
+- (void) sendCommerceEvent:(BNCCommerceEvent*)commerceEvent
+				  metadata:(NSDictionary<NSString*,id>*)metadata
+			withCompletion:(void (^) (NSDictionary*response, NSError*error))completion;
 
 #pragma mark - Short Url Sync methods
 

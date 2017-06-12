@@ -7,8 +7,8 @@ apiversion: 3
 architectures: armeabi-v7a x86
 description: Titanium-Deferred-Deep-Linking-SDK
 author: Branch Metrics
-license: Specify your license
-copyright: Copyright (c) 2015 by Your Company
+license: MIT
+copyright: Copyright (c) 2017 by Branch Metrics
 
 # these should not be edited
 name: Titanium-Deferred-Deep-Linking-SDK

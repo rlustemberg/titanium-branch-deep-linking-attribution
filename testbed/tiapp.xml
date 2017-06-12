@@ -3,7 +3,7 @@
   xmlns:ti="http://ti.appcelerator.org">
   <id>io.branch.testbed</id>
   <name>testbed</name>
-  <version>1.5.2</version>
+  <version>1.6.0</version>
   <publisher>Branch Metrics Ltd.</publisher>
   <url>http://www.branch.io</url>
   <description/>

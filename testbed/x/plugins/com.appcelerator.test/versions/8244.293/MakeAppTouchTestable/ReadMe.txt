@@ -1,1 +1,0 @@
-For MakeAppTouchTestable utility instructions, refer to the TouchTest Developer Guide, available on the CloudLink > Documentation page (http://cloudlink.soasta.com/t5/Documentation/bg-p/Documentation)

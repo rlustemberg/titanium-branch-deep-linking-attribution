@@ -4,9 +4,9 @@
 	<classpathentry kind="src" path="android/build/.apt_generated"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/Users/jdee/Library/Android/sdk/platforms/android-23/android.jar"/>
-	<classpathentry kind="lib" path="/Users/jdee/Library/Application Support/Titanium/mobilesdk/osx/6.1.0.GA/android/titanium.jar"/>
-	<classpathentry kind="lib" path="/Users/jdee/Library/Application Support/Titanium/mobilesdk/osx/6.1.0.GA/android/kroll-common.jar"/>
-	<classpathentry kind="lib" path="/Users/jdee/Library/Application Support/Titanium/mobilesdk/osx/6.1.0.GA/android/kroll-apt.jar"/>
-  <classpathentry kind="lib" path="android/lib/Branch-2.8.0.jar"/>
+	<classpathentry kind="lib" path="/Users/jdee/Library/Application Support/Titanium/mobilesdk/osx/5.5.1.GA/android/titanium.jar"/>
+	<classpathentry kind="lib" path="/Users/jdee/Library/Application Support/Titanium/mobilesdk/osx/5.5.1.GA/android/kroll-common.jar"/>
+	<classpathentry kind="lib" path="/Users/jdee/Library/Application Support/Titanium/mobilesdk/osx/5.5.1.GA/android/kroll-apt.jar"/>
+    <classpathentry kind="lib" path="android/lib/Branch-2.8.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

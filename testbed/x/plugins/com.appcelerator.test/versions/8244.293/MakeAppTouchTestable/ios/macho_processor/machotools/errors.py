@@ -1,2 +1,0 @@
-class MachoError(Exception):
-    pass

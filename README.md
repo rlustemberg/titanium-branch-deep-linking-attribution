@@ -203,6 +203,7 @@ ___
 ## API Reference
 
 1. Branch Session
+  + [.setDebug()](#setdebug)
   + [.initSession()](#initsession)
   + [.getLatestReferringParams()](#getlatestreferringparams)
   + [.getFirstReferringParams()](#getfirstreferringparams)
@@ -224,6 +225,21 @@ ___
 ___
 
 * * *
+
+### setDebug()
+
+Calling this method will generate simulated install events for testing
+deferred deep linking. It should not be called in production releases.
+It must be called before [initSession()](#initsession).
+
+##### Usage
+
+```js
+branch.setDebug(true);
+```
+
+___
+
 
 ### initSession()
 

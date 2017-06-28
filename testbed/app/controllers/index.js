@@ -10,12 +10,13 @@ $.initialize = function(params) {
     $.initializeViews();
     $.initializeHandlers();
 
+    branch.setDebug();
+
     if (OS_IOS) {
 
         $.window.open();
 
         Ti.API.info("start initSession");
-        branch.setDebug();
 
         branch.initSession();
 

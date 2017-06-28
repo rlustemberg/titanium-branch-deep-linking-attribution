@@ -60,7 +60,7 @@ $.initializeHandlers = function() {
 
     $.getSessionButton.addEventListener('click', $.onGetSessionButtonClicked);
     $.getInstallSessionButton.addEventListener('click', $.onGetInstallSessionButtonClicked);
-    $.setIndentityButton.addEventListener('click', $.onSetIdentityButtonClicked);
+    $.setIdentityButton.addEventListener('click', $.onSetIdentityButtonClicked);
     $.customActionButton.addEventListener('click', $.onCustomActionButtonClicked);
     $.rewardBalanceButton.addEventListener('click', $.onRewardBalanceButtonClicked);
     $.redeemRewardButton.addEventListener('click', $.onRedeemRewardButtonClicked);

@@ -99,7 +99,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 		Intent intent = obj.getIntent();
 		PrefHelper prefHelper_ = PrefHelper.getInstance(TiApplication.getInstance());
 		if(data != null){
-			
+
 
 	        if (data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey()) != null) {
 	            prefHelper_.setLinkClickIdentifier(data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey()));
@@ -164,11 +164,21 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	}
 
 	@Kroll.method
+  public void setDebug()
+  {
+  	Log.d(LCAT, "start setDebug");
+ 		final Activity activity = this.getActivity();
+ 		final Branch instance = Branch.getInstance(activity);
+
+ 		instance.setDebug();
+ 	}
+
+	@Kroll.method
 	public KrollDict getLatestReferringParams()
 	{
 		Log.d(LCAT, "start getLatestReferringParams");
 		final Activity activity = this.getActivity();
-		
+
 		JSONObject sessionParams = branchInstance_.getLatestReferringParams();
 		if (sessionParams == null) {
     		Log.d(LCAT, "return is null");
@@ -186,7 +196,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	{
 		Log.d(LCAT, "start getFirstReferringParams");
 		final Activity activity = this.getActivity();
-		
+
 		JSONObject installParams = branchInstance_.getFirstReferringParams();
 		if (installParams == null) {
     		Log.d(LCAT, "return is null");
@@ -204,7 +214,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	{
 		Log.d(LCAT, "start setIdentity");
 		final Activity activity = this.getActivity();
-		
+
 		branchInstance_.setIdentity(identity);
 	}
 
@@ -231,7 +241,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	{
 		Log.d(LCAT, "start loadRewards");
 		final Activity activity = this.getActivity();
-		
+
 		branchInstance_.loadRewards(new LoadRewardsListener());
 	}
 
@@ -240,7 +250,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	{
 		Log.d(LCAT, "start redeemRewards");
 		final Activity activity = this.getActivity();
-		
+
 		branchInstance_.redeemRewards(value);
 	}
 
@@ -289,7 +299,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 		Log.d(LCAT, "start getCreditsForBucket" + bucket);
 
 		final Activity activity = this.getActivity();
-		
+
 		int credits =branchInstance_.getCreditsForBucket(bucket);
 		response.put("bucket", bucket);
 	    response.put("credits", credits);
@@ -412,7 +422,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 
 	        TitaniumDeferredDeepLinkingSDKModule self = TitaniumDeferredDeepLinkingSDKModule.this;
 			KrollDict response = new KrollDict();
-			
+
 			if (error == null) {
 				response.put("result", "success");
 			} else {

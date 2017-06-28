@@ -30,7 +30,7 @@ ___
 #### Titanium 6.x SDK
 
 1. Navigate to the `android_ti6x/dist` folder (in the root directory of this repo) OR [download the zip file of the module](https://github.com/BranchMetrics/titanium-branch-deep-linking/blob/master/android_ti6x/dist/io.branch.sdk-android-1.6.1.zip)
-2. Extract the contents of io.branch.sdk-android-1.6.1.zip.
+2. Extract the contents of io.branch.sdk-android-1.6.2.zip.
 3. Copy the `android` folder to your titanium `modules` folder.
 
 #### Titanium 5.x SDK
@@ -46,7 +46,7 @@ We've recently found that there is an issue involving the `WRITE_EXTERNAL_STORAG
 ### iOS Module Installation
 
 1. Navigate to the `iphone` folder (in the root directory of this repo) OR [download the zip file of the module](https://github.com/BranchMetrics/titanium-branch-deep-linking/blob/master/iphone/io.branch.sdk-iphone-1.5.0.zip)
-2. Extract the contents of io.branch.sdk-iphone-1.5.0.zip.
+2. Extract the contents of io.branch.sdk-iphone-1.5.1.zip.
 3. Copy the `iphone` folder to your titanium `modules` folder.
 
 ___
@@ -203,6 +203,7 @@ ___
 ## API Reference
 
 1. Branch Session
+  + [.setDebug()](#setdebug)
   + [.initSession()](#initsession)
   + [.getLatestReferringParams()](#getlatestreferringparams)
   + [.getFirstReferringParams()](#getfirstreferringparams)
@@ -224,6 +225,21 @@ ___
 ___
 
 * * *
+
+### setDebug()
+
+Calling this method will generate simulated install events for testing
+deferred deep linking. It should not be called in production releases.
+It must be called before [initSession()](#initsession).
+
+##### Usage
+
+```js
+branch.setDebug(true);
+```
+
+___
+
 
 ### initSession()
 

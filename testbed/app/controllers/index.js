@@ -10,19 +10,21 @@ $.initialize = function(params) {
     $.initializeViews();
     $.initializeHandlers();
 
+    branch.setDebug();
+
     if (OS_IOS) {
 
         $.window.open();
 
         Ti.API.info("start initSession");
-        
+
         branch.initSession();
 
     } else if (OS_ANDROID){
 
         $.window.open();
 
-        Ti.Android.currentActivity.setOnStart(function(e){ 
+        Ti.Android.currentActivity.setOnStart(function(e){
             Ti.API.info('onStart' + JSON.stringify(e));
             branch.initSession();
         });
@@ -31,7 +33,7 @@ $.initialize = function(params) {
             Ti.API.info("inside newintent: " + JSON.stringify(e));
             $.window.open();
             branch.updateIntent(e.intent);
-            
+
         });
     }
 };
@@ -46,19 +48,19 @@ $.initializeViews = function() {
 
 $.initializeHandlers = function() {
     if (OS_IOS) {
-        
+
         Ti.App.iOS.addEventListener('continueactivity', function(e) {
             Ti.API.info(e.activityType)
             Ti.API.info("inside continueactivity: " + JSON.stringify(e));
-            
+
         });
 
-       
-    } 
+
+    }
 
     $.getSessionButton.addEventListener('click', $.onGetSessionButtonClicked);
     $.getInstallSessionButton.addEventListener('click', $.onGetInstallSessionButtonClicked);
-    $.setIndentityButton.addEventListener('click', $.onSetIdentityButtonClicked);
+    $.setIdentityButton.addEventListener('click', $.onSetIdentityButtonClicked);
     $.customActionButton.addEventListener('click', $.onCustomActionButtonClicked);
     $.rewardBalanceButton.addEventListener('click', $.onRewardBalanceButtonClicked);
     $.redeemRewardButton.addEventListener('click', $.onRedeemRewardButtonClicked);

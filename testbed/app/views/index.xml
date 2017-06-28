@@ -5,7 +5,7 @@
             <Button class="first-section-btn first-layer menu-right" title="get Install" id="getInstallSessionButton"/>
         </View>
         <View class="second-section">
-            <Button class="second-section-btn first-layer" title="set Indentity" id="setIndentityButton"/>
+            <Button class="second-section-btn first-layer" title="set Identity" id="setIdentityButton"/>
             <Button class="second-section-btn second-layer" title="custom Action" id="customActionButton"/>
             <TextField class="second-section-textfield first-layer menu-left" id="identityTextField"/>
             <TextField class="second-section-textfield second-layer menu-left" id="customActionTextField"/>

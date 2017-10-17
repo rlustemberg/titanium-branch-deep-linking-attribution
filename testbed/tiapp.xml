@@ -3,7 +3,7 @@
   xmlns:ti="http://ti.appcelerator.org">
   <id>io.branch.testbed</id>
   <name>testbed</name>
-  <version>1.6.0</version>
+  <version>1.6.1</version>
   <publisher>Branch Metrics Ltd.</publisher>
   <url>http://www.branch.io</url>
   <description/>
@@ -68,7 +68,7 @@
         <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_jixgYiNQ5mIoxwuSag5U7niavqp6LiFW"/>
         <!-- For your test app, if you have one; Again, use your actual test Branch key -->
         <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_jmzd0lUR9gIiAAEQfo42onbcExe1MeHg"/>
-        <activity android:name=".TestbedActivity" android:label="@string/app_name" android:launchMode="singleTask" android:alwaysRetainTaskState="true">
+        <activity android:name=".TestbedActivity" android:label="@string/app_name" android:alwaysRetainTaskState="true">
           <intent-filter>
             <action android:name="android.intent.action.MAIN"/>
             <category android:name="android.intent.category.LAUNCHER"/>
@@ -112,7 +112,7 @@
     <target device="ipad">true</target>
     <target device="iphone">true</target>
   </deployment-targets>
-  <sdk-version>6.1.0.GA</sdk-version>
+  <sdk-version>6.2.2.GA</sdk-version>
   <plugins>
     <plugin version="1.0">ti.alloy</plugin>
   </plugins>

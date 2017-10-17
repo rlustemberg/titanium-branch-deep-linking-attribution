@@ -10,19 +10,21 @@ $.initialize = function(params) {
     $.initializeViews();
     $.initializeHandlers();
 
-    branch.setDebug();
-
     if (OS_IOS) {
 
         $.window.open();
 
         Ti.API.info("start initSession");
 
+        branch.setUseTestBranchKey(true);
+        branch.setDebug();
         branch.initSession();
 
     } else if (OS_ANDROID){
 
         $.window.open();
+
+        branch.setDebug();
 
         Ti.Android.currentActivity.setOnStart(function(e){
             Ti.API.info('onStart' + JSON.stringify(e));

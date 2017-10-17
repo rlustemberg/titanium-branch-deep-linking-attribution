@@ -8,7 +8,7 @@
 
 
 #import "BNCStrongMatchHelper.h"
-#import <objc/runtime.h>
+@import ObjectiveC.runtime;
 #import "BNCConfig.h"
 #import "BNCPreferenceHelper.h"
 #import "BNCSystemObserver.h"
@@ -44,7 +44,7 @@
 
 
 #else   // ------------------------------------------------------------------------------ iOS >= 9.0
-#import <SafariServices/SafariServices.h>
+@import SafariServices;
 
 
 #pragma mark - BNCMatchView
@@ -133,7 +133,7 @@
 
 + (NSURL *)getUrlForCookieBasedMatchingWithBranchKey:(NSString *)branchKey
                                          redirectUrl:(NSString *)redirectUrl {
-    if (!branchKey) {
+    if (!branchKey || !self.cookiesAvailableInOS) {
         return nil;
     }
     
@@ -192,7 +192,13 @@
     #pragma clang diagnostic pop
 }
 
++ (BOOL)cookiesAvailableInOS {
+    return [UIDevice currentDevice].systemVersion.doubleValue < 11.0;
+}
+
 - (void)createStrongMatchWithBranchKey:(NSString *)branchKey {
+    if (!self.class.cookiesAvailableInOS) return;
+
     @synchronized (self) {
         if (self.requestInProgress) return;
 

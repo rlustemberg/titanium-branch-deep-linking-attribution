@@ -1,6 +1,8 @@
 "/Users/jdee/github/BranchMetrics/titanium-branch-deep-linking/android_ti6x/src/io/branch/sdk/BranchUniversalObjectProxy.java"
 "/Users/jdee/github/BranchMetrics/titanium-branch-deep-linking/android_ti6x/src/io/branch/sdk/TitaniumDeferredDeepLinkingSDKModule.java"
 "/Users/jdee/github/BranchMetrics/titanium-branch-deep-linking/android_ti6x/build/generated/java/io/branch/sdk/TitaniumDeferredDeepLinkingSDKBootstrap.java"
+"/Users/jdee/github/BranchMetrics/titanium-branch-deep-linking/android_ti6x/build/generated/r/android/support/compat/R.java"
+"/Users/jdee/github/BranchMetrics/titanium-branch-deep-linking/android_ti6x/build/generated/r/android/support/design/R.java"
 "/Users/jdee/github/BranchMetrics/titanium-branch-deep-linking/android_ti6x/build/generated/r/android/support/v7/appcompat/R.java"
 "/Users/jdee/github/BranchMetrics/titanium-branch-deep-linking/android_ti6x/build/generated/r/android/support/v7/cardview/R.java"
 "/Users/jdee/github/BranchMetrics/titanium-branch-deep-linking/android_ti6x/build/generated/r/io/branch/sdk/R.java"

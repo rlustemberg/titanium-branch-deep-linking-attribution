@@ -254,6 +254,11 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
     }
 }
 
+- (void)setUseTestBranchKey:(BOOL)useTestBranchKey
+{
+    [Branch setUseTestBranchKey:useTestBranchKey];
+}
+
 - (Branch *)getTestInstance
 {
     return [Branch getTestInstance];
@@ -272,7 +277,6 @@ bool applicationOpenURLSourceApplication(id self, SEL _cmd, UIApplication* appli
     Branch *branch = [Branch getInstance];
 
     NSDictionary *launchOptions = [[TiApp app] launchOptions];
-    [branch accountForFacebookSDKPreventingAppLaunch];
 
     [branch initSessionWithLaunchOptions:launchOptions
         automaticallyDisplayDeepLinkController:NO

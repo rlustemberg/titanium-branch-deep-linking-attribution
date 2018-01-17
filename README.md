@@ -2,7 +2,7 @@
 
 ## Full documentation
 
-Exhaustive documentation can be found on our [documentation portal](https://dev.branch.io).  you may also find our [support portal and user forums](http://support.branch.io) helpful.
+Exhaustive documentation can be found on our [documentation portal](https://docs.branch.io/pages/apps/titanium/).  you may also find our [support portal and user forums](http://support.branch.io) helpful.
 
 This is a repository of our open source Branch SDK for Titanium, and the information presented here serves as a reference
 manual for our Titanium modules. See the table of contents below for a complete list of the content featured in this

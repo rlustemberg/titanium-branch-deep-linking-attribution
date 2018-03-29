@@ -33,7 +33,6 @@ $.initialize = function(params) {
 
         Ti.Android.currentActivity.addEventListener("newintent", function(e) {
             Ti.API.info("inside newintent: " + JSON.stringify(e));
-            $.window.open();
             branch.updateIntent(e.intent);
 
         });

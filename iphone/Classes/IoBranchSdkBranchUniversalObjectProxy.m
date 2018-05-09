@@ -79,11 +79,11 @@
         else if ([key isEqualToString:@"contentIndexingMode"]) {
             NSString *indexingMode = [properties valueForKey:key];
             if ([indexingMode isEqualToString:@"private"]) {
-                self.branchUniversalObj.contentIndexMode = ContentIndexModePrivate;
+                self.branchUniversalObj.contentIndexMode = BranchContentIndexModePrivate;
 
             }
             else if ([indexingMode isEqualToString:@"public"]){
-                self.branchUniversalObj.contentIndexMode = ContentIndexModePublic;
+                self.branchUniversalObj.contentIndexMode = BranchContentIndexModePublic;
             }
         }
         else if ([key isEqualToString:@"contentImageUrl"]){
@@ -145,7 +145,7 @@
 
     NSDictionary *arg1 = [args objectAtIndex:0];
     NSDictionary *arg2 = [args objectAtIndex:1];
-    KrollCallback *callback = [args count] == 3 ? [args objectAtIndex:2] : nil;
+    KrollCallback *callback = [args objectAtIndex:2];
 
     BranchLinkProperties *props = [[BranchLinkProperties alloc] init];
 
@@ -168,20 +168,9 @@
         bool cancelled = NO;
 
         NSDictionary *propertiesDict = [[NSDictionary alloc] initWithObjectsAndKeys:url, @"generatedLink", [error localizedDescription], @"error", nil];
+        KrollEvent *invocationEvent = [[KrollEvent alloc] initWithCallback:callback eventObject:propertiesDict thisObject:self];
         
-        if (callback != nil) {
-
-            KrollEvent *invocationEvent = [[KrollEvent alloc] initWithCallback:callback eventObject:propertiesDict thisObject:self];
-            
-            [[callback context] enqueue:invocationEvent];
-        }
-
-        if (error == nil) {
-            [self fireEvent:@"bio:generateShortUrl" withObject:propertiesDict];
-        }
-        else {
-            [self fireEvent:@"bio:generateShortUrl" withObject:@{@"error":[error localizedDescription]}];
-        }
+        [[callback context] enqueue:invocationEvent];
 
     }];
 }
@@ -207,40 +196,37 @@
     NSDictionary *options = [args objectAtIndex:0];
     NSDictionary *controlParams = [args objectAtIndex:1];
     NSMutableDictionary *mutableCombinedParams = [options mutableCopy];
-    [mutableCombinedParams addEntriesFromDictionary:controlParams];        
+    [mutableCombinedParams addEntriesFromDictionary:controlParams];
+    
     NSDictionary *combinedParams = mutableCombinedParams;
     BranchLinkProperties *linkProperties = [BranchLinkProperties getBranchLinkPropertiesFromDictionary:combinedParams];
-    
+    UIActivityItemProvider *itemProvider = [self.branchUniversalObj getBranchActivityItemWithLinkProperties:linkProperties];
+    NSMutableArray *items = [NSMutableArray arrayWithObject:itemProvider];
+    UIActivityViewController *shareViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+
+    // Change Rect to position Popover
+    UIViewController *view = [UIApplication sharedApplication].keyWindow.rootViewController;
+
+    if (shareText) {
+        [items addObject:shareText];
+    }
+    if (linkProperties.controlParams[@"$email_body"]) {
+        [items addObject:linkProperties.controlParams[@"$email_body"]];
+    }
+    if (linkProperties.controlParams[@"$email_subject"]) {
+        @try {
+            [shareViewController setValue:linkProperties.controlParams[@"$email_subject"] forKey:@"subject"];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"[Branch warning] Unable to setValue 'emailSubject' forKey 'subject' on UIActivityViewController.");
+        }
+    }
+
+    [shareViewController setCompletionWithItemsHandler: ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+        [self fireEvent:@"bio:shareChannelSelected"];
+    }];
+
     dispatch_async(dispatch_get_main_queue(), ^{
-
-        UIActivityItemProvider *itemProvider = [self.branchUniversalObj getBranchActivityItemWithLinkProperties:linkProperties];
-        NSMutableArray *items = [NSMutableArray arrayWithObject:itemProvider];
-
-        if (shareText) {
-            [items addObject:shareText];
-        }
-        if (linkProperties.controlParams[@"$email_body"]) {
-            [items addObject:linkProperties.controlParams[@"$email_body"]];
-        }
-
-        UIActivityViewController *shareViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
-
-        if (linkProperties.controlParams[@"$email_subject"]) {
-            @try {
-                [shareViewController setValue:linkProperties.controlParams[@"$email_subject"] forKey:@"subject"];
-            }
-            @catch (NSException *exception) {
-                NSLog(@"[Branch warning] Unable to setValue 'emailSubject' forKey 'subject' on UIActivityViewController.");
-            }
-        }
-
-        // Change Rect to position Popover
-        UIViewController *view = [UIApplication sharedApplication].keyWindow.rootViewController;
-
-        [shareViewController setCompletionWithItemsHandler: ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-            [self fireEvent:@"bio:shareChannelSelected"];
-        }];
-
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             [self.branchUniversalObj showShareSheetWithLinkProperties:linkProperties
                                      andShareText:shareText

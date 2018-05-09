@@ -81,6 +81,7 @@
 - (BOOL) returnURL {
     BOOL returnURL = YES;
     if ([UIDevice currentDevice].systemVersion.doubleValue >= 11.0 &&
+        [UIDevice currentDevice].systemVersion.doubleValue  < 11.2 &&
         [self.activityType isEqualToString:UIActivityTypeCopyToPasteboard]) {
         returnURL = NO;
     }
@@ -106,7 +107,14 @@
     
     // Because Facebook et al immediately scrape URLs, we add an additional parameter to the
     // existing list, telling the backend to ignore the first click
-    NSArray *scrapers = @[@"Facebook", @"Twitter", @"Slack", @"Apple Notes"];
+    NSArray *scrapers = @[
+        @"Facebook",
+        @"Twitter",
+        @"Slack",
+        @"Apple Notes",
+        @"Skype",
+        @"SMS"
+    ];
     for (NSString *scraper in scrapers) {
         if ([channel isEqualToString:scraper]) {
             NSURL *URL = [NSURL URLWithString:[[Branch getInstance]
@@ -187,6 +195,7 @@
         @"WeChat",      @"com.tencent.xin.sharetimeline",
         @"LINE",        @"jp.naver.line.Share",
 		@"Pinterest",   @"pinterest.ShareExtension",
+        @"Skype",       @"com.skype.skype.sharingextension",
 
         //  Keys for older app versions --
 

@@ -5,15 +5,19 @@
             <Button class="first-section-btn first-layer menu-right" title="get Install" id="getInstallSessionButton"/>
         </View>
         <View class="second-section">
-            <Button class="second-section-btn first-layer" title="set Identity" id="setIdentityButton"/>
-            <Button class="second-section-btn second-layer" title="custom Action" id="customActionButton"/>
-            <TextField class="second-section-textfield first-layer menu-left" id="identityTextField"/>
-            <TextField class="second-section-textfield second-layer menu-left" id="customActionTextField"/>
+            <Label class="second-section-label first-layer label-left" text="User Tracking" id="label1"/>
+            <Switch class="second-section-switch first-layer switch-right" id="userTrackingSwitch" value="true"/>
         </View>
         <View class="third-section">
-            <Button class="third-section-btn first-layer small-btn small-btn-first" title="Reward Balance" id="rewardBalanceButton"/>
-            <Button class="third-section-btn first-layer small-btn small-btn-second" title="Redeem 5 Rewards" id="redeemRewardButton"/>
-            <Button class="third-section-btn first-layer small-btn small-btn-third" title="Credit History" id="creditHistoryButton"/>
+            <Button class="third-section-btn first-layer" title="set Identity" id="setIdentityButton"/>
+            <Button class="third-section-btn second-layer" title="custom Action" id="customActionButton"/>
+            <TextField class="third-section-textfield first-layer menu-left" id="identityTextField"/>
+            <TextField class="third-section-textfield second-layer menu-left" id="customActionTextField"/>
+        </View> 
+        <View class="fourth-section">
+            <Button class="fourth-section-btn first-layer small-btn small-btn-first" title="Reward Balance" id="rewardBalanceButton"/>
+            <Button class="fourth-section-btn first-layer small-btn small-btn-second" title="Redeem 5 Rewards" id="redeemRewardButton"/>
+            <Button class="fourth-section-btn first-layer small-btn small-btn-third" title="Credit History" id="creditHistoryButton"/>
             <Button class="first-section-btn second-layer menu-left" title="Branch Universal Object" id="branchUniversalButton"/>
             <Button class="first-section-btn second-layer menu-right" title="Logout" id="logoutButton"/>
         </View>

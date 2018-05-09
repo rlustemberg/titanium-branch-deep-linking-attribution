@@ -55,12 +55,21 @@ __attribute__((constructor)) void BNCForceNSErrorCategoryToLoad() {
 
         // BNCSpotlightNotAvailableError
         @"The Core Spotlight indexing service is not available on this device.",
-
+        
         // BNCSpotlightTitleError
         @"Spotlight indexing requires a title.",
-
+        
         // BNCRedeemZeroCreditsError
         @"Can't redeem zero credits.",
+        
+        // BNCSpotlightIdentifierError
+        @"The Spotlight identifier is required to remove indexing from spotlight.",
+        
+        //BNCSpotlightPublicIndexError
+        @"Spotlight cannot remove publicly indexed content.",
+
+        //BNCTrackingDisabledError
+        @"User tracking is disabled."
     };
 
     #define _countof(array) (sizeof(array)/sizeof(array[0]))

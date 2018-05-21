@@ -1,22 +1,21 @@
+/**
+ @file          BNCDebug.m
+ @package       Branch-SDK
+ @brief         Debugging Support.
 
-
-//--------------------------------------------------------------------------------------------------
-//
-//                                                                                        BNCDebug.m
-//                                                                                  Branch.framework
-//
-//                                                                                 Debugging Support
-//                                                                        Edward Smith, October 2016
-//
-//                                             -©- Copyright © 2016 Branch, all rights reserved. -©-
-//
-//--------------------------------------------------------------------------------------------------
-
+ @author        Edward Smith
+ @date          October 2016
+ @copyright     Copyright © 2016 Branch. All rights reserved.
+*/
 
 #import "BNCDebug.h"
+#if __has_feature(modules)
 @import Darwin.sys.sysctl;
 @import ObjectiveC.runtime;
-
+#else
+#import <sys/sysctl.h>
+#import <objc/runtime.h>
+#endif
 
 BOOL BNCDebuggerIsAttached() {
     //  From an Apple tech note that I've lost --EB Smith

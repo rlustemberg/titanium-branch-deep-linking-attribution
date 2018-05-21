@@ -52,7 +52,7 @@ $.initializeHandlers = function() {
     if (OS_IOS) {
 
         Ti.App.iOS.addEventListener('continueactivity', function(e) {
-            Ti.API.info(e.activityType)
+            Ti.API.info(e.activityType);
             Ti.API.info("inside continueactivity: " + JSON.stringify(e));
 
         });
@@ -69,6 +69,7 @@ $.initializeHandlers = function() {
     $.creditHistoryButton.addEventListener('click', $.onCreditHistoryButtonClicked);
     $.branchUniversalButton.addEventListener('click', $.onBranchUniversalButtonClicked);
     $.logoutButton.addEventListener('click', $.onLogoutButtonClicked);
+    $.userTrackingSwitch.addEventListener('change', $.onUserTrackingSwitchClicked);
 
     // Branch Listeners
     branch.addEventListener("bio:initSession", $.onInitSessionFinished);
@@ -87,24 +88,52 @@ $.onInitSessionFinished = function(data) {
     Ti.API.info("inside onInitSessionFinished");
     showData(data);
     alert(data);
-}
+    
+    if (OS_ANDROID) {
+    	var value = branch.isTrackingDisabled();
+    	Ti.API.info("inside onInitSessionFinished - Is Branch Tracking disabled? : " + value);
+    	$.userTrackingSwitch.setValue(!value);
+    } else if  (OS_IOS) {
+    	var value = branch.trackingDisabled();
+    	Ti.API.info("inside onInitSessionFinished - Is Branch Tracking disabled? : " + value);
+    	$.userTrackingSwitch.setValue(!value);
+    }
+    
+};
 
 $.onLogoutFinished = function() {
     Ti.API.info("inside onLogoutFinished");
     alert("Logout Success!");
-}
+};
 
 $.onGetSessionButtonClicked = function() {
     Ti.API.info("inside onGetSessionButtonClicked");
     var sessionParams = branch.getLatestReferringParams();
     showData(sessionParams);
-}
+};
 
 $.onGetInstallSessionButtonClicked = function() {
     Ti.API.info("inside onGetInstallSessionButtonClicked");
     var installParams = branch.getFirstReferringParams();
     showData(installParams);
-}
+};
+
+$.onUserTrackingSwitchClicked = function() {
+    Ti.API.info("inside onUserTrackingSwitchClicked");
+    if (OS_ANDROID) {
+    	alert("UserTracking : " + $.userTrackingSwitch.getValue());
+    	branch.disableTracking(!$.userTrackingSwitch.getValue());
+    	var value = branch.isTrackingDisabled();
+    	Ti.API.info("Is Branch Tracking disabled? : " + value);
+    } else if  (OS_IOS) {
+    	alert("UserTracking : " + $.userTrackingSwitch.getValue());
+    	var value = branch.setTrackingDisabled(!$.userTrackingSwitch.getValue());
+    	Ti.API.info("setTrackingDisabled() - Is Branch Tracking disabled? : " + value);
+    	var disabled = branch.trackingDisabled();
+    	Ti.API.info("trackingDisabled() - Is Branch Tracking disabled? : " + disabled);
+    	
+    }
+};
 
 $.onSetIdentityButtonClicked = function() {
     Ti.API.info("inside onSetIdentityButtonClicked");
@@ -121,56 +150,56 @@ $.onSetIdentityButtonClicked = function() {
             }
         });
     }
-}
+};
 
 $.onCustomActionButtonClicked = function() {
     Ti.API.info("inside onCustomActionButtonClicked");
     branch.userCompletedAction($.customActionTextField.getValue());
     showData({"userCompletedAction":$.customActionTextField.getValue()});
-}
+};
 
 $.onBranchUniversalButtonClicked = function() {
     Ti.API.info("inside onBranchUniversalButtonClicked");
     var branchUniversalWin = Alloy.createController('branchUniversal', {});
     view = branchUniversalWin.getView();
     view.open();
-}
+};
 
 $.onLogoutButtonClicked = function() {
     Ti.API.info("inside onLogoutButtonClicked");
     branch.logout();
-}
+};
 
 $.onRewardBalanceButtonClicked = function() {
     Ti.API.info("inside onRewardBalanceButtonClicked");
     branch.loadRewards();
-}
+};
 
 $.onLoadRewardFinished = function(data) {
     Ti.API.info("inside onLoadRewardFinished");
     showData(data);
-}
+};
 
 $.onRedeemRewardButtonClicked = function() {
     Ti.API.info("inside onRedeemRewardButtonClicked");
     branch.redeemRewards(5);
     showData({"redeemRewards":5});
-}
+};
 
 $.onCreditHistoryButtonClicked = function() {
     Ti.API.info("inside onCreditHistoryButtonClicked");
     branch.getCreditHistory();
-}
+};
 
 $.onGetCreditHistoryFinished = function(data) {
     Ti.API.info("inside onGetCreditHistoryFinished");
     showData(data);
-}
+};
 
 $.onRedeemRewardFinished = function(data) {
     Ti.API.info("redeem reward finished");
     showData(data);
-}
+};
 
 /*
  ************************************************

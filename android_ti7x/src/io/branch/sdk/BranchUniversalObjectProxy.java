@@ -19,6 +19,8 @@ import io.branch.referral.Defines;
 import io.branch.referral.SharingHelper;
 import io.branch.referral.util.LinkProperties;
 import io.branch.referral.util.ShareSheetStyle;
+import io.branch.referral.util.BranchEvent;
+import io.branch.referral.util.CurrencyType;
 
 import java.lang.Runnable;
 import java.lang.Thread;
@@ -225,7 +227,66 @@ public class BranchUniversalObjectProxy extends KrollProxy
             }
         });
 	}
+	
+	@Kroll.method
+	public void setStandardBranchEvent(KrollDict options)
+	{
+		Log.d(LCAT, "start setStandardBranchEvent");
+		final Activity activity = this.getActivity();
 
+		final BranchEvent branchEvent = new BranchEvent(options.getString("branchStandardEvent"));
+		branchEvent.setAffiliation(options.getString("affiliation"));
+		branchEvent.setCoupon(options.getString("coupon"));
+		branchEvent.setCurrency(CurrencyType.getValue(options.getString("currency")));
+		branchEvent.setDescription(options.getString("description"));
+		branchEvent.setShipping(options.getDouble("shipping"));
+		branchEvent.setTax(options.getDouble("tax"));
+		branchEvent.setRevenue(options.getDouble("revenue"));
+		branchEvent.setTransactionID(options.getString("transactionID"));
+		branchEvent.setSearchQuery(options.getString("searchQuery"));
+        
+        
+        if (options.containsKey("contentMetadata")) {
+            Log.d(LCAT, "addContentMetadata");
+            Object contentMetadata = options.get("contentMetadata");
+            Map<String,String> hashMap = (Map<String,String>)contentMetadata;
+            
+            for(Iterator iterator = hashMap.keySet().iterator(); iterator.hasNext();) {
+                String key = (String) iterator.next();
+                branchEvent.addCustomDataProperty(key, hashMap.get(key));
+            }
+        }
+		branchEvent.addContentItems(branchUniversalObject);
+		
+		branchEvent.logEvent(activity);
+   
+	}
+
+
+	@Kroll.method
+	public void setCustomBranchEvent(KrollDict options)
+	{
+		Log.d(LCAT, "start setCustomBranchEvent");
+		final Activity activity = this.getActivity();
+
+		final BranchEvent branchEvent = new BranchEvent(options.getString("eventName"));
+		
+        if (options.containsKey("contentMetadata")) {
+            Log.d(LCAT, "addContentMetadata");
+            Object contentMetadata = options.get("contentMetadata");
+            Map<String,String> hashMap = (Map<String,String>)contentMetadata;
+            
+            for(Iterator iterator = hashMap.keySet().iterator(); iterator.hasNext();) {
+                String key = (String) iterator.next();
+                branchEvent.addCustomDataProperty(key, hashMap.get(key));
+            }
+        }
+		branchEvent.addContentItems(branchUniversalObject);
+		
+		branchEvent.logEvent(activity);
+   
+	}
+	
 	//-----------  Property Getter/Setter ----------//
 	@Kroll.getProperty @Kroll.method
 	public String getCanonicalIdentifier()

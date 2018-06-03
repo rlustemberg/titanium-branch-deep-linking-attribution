@@ -27,6 +27,8 @@ $.initializeHandlers = function() {
     $.generateUrlButton.addEventListener('click', $.onGenerateUrlButtonClicked);
     $.shareSheetButton.addEventListener('click', $.onShareSheetButtonClicked);
     $.copyButton.addEventListener('click', $.onCopyButtonClicked);
+    $.customEventViewButton.addEventListener('click', $.onCustomEventViewButtonClicked);
+    $.standardEventViewButton.addEventListener('click', $.onStandardEventViewButtonClicked);
 };
 
 /*
@@ -61,13 +63,48 @@ $.onInitBranchButtonClicked = function() {
     $.toggleButtons(true);
 
     showData({"init BUO":"success"});
-}
+};
 
 $.onRegisterViewButtonClicked = function() {
     Ti.API.info("inside onRegisterViewButtonClicked");
     branchUniversalObjectProxy.registerView();
     showData({"registerView":"success"});
-}
+};
+
+$.onCustomEventViewButtonClicked = function() {
+    Ti.API.info("inside onCustomEventViewButtonClicked");
+       branchUniversalObjectProxy.setCustomBranchEvent({
+    	"eventName" : "Logged_In",
+        "contentMetadata" : {
+          "Custom_Event_Property_Key11" : "Custom_Event_Property_val11",
+          "Custom_Event_Property_Key22" : "Custom_Event_Property_val22"
+      },
+        
+    });
+    showData({"customEventView":"success"});
+};
+
+$.onStandardEventViewButtonClicked = function() {
+    Ti.API.info("inside onStandardEventViewButtonClicked");   
+    branchUniversalObjectProxy.setStandardBranchEvent({
+    	"branchStandardEvent" : "PURCHASE",
+        "affiliation" : "sample-affiliation",
+        "coupon" : "sample-coupon",
+        "currency" : "USD",
+        "description" : "sample-description",
+        "shipping" : 10.2,
+        "tax" : 8.5,
+        "revenue" : 100.56,
+        "transactionID" : "abc123",
+        "searchQuery" : "sample-search",
+        "contentMetadata" : {
+          "Custom_Event_Property_Key1" : "Custom_Event_Property_val1",
+          "Custom_Event_Property_Key2" : "Custom_Event_Property_val2"
+      },
+        
+    });
+    showData({"standardEventView":"success"});
+};
 
 $.onGenerateUrlButtonClicked = function() {
     Ti.API.info("inside onGenerateUrlButtonClicked");
@@ -83,13 +120,13 @@ $.onGenerateUrlButtonClicked = function() {
         Ti.API.info(res);
         $.linkTextArea.setValue(res["generatedLink"]);
     });
-}
+};
 
 $.onGenerateUrlFinished = function(data) {
     Ti.API.info("inside onGenerateUrlFinished");
     Ti.API.info("GenerateUrlFinished: " + data["generatedLink"]);
     $.linkTextArea.setValue(data["generatedLink"]);
-}
+};
 
 $.onShareSheetButtonClicked = function() {
     Ti.API.info("inside onShareSheetButtonClicked");
@@ -103,29 +140,31 @@ $.onShareSheetButtonClicked = function() {
         "$email_subject" : "This is a sample subject",
         "$email_body" : "This is a sample body",
     });
-}
+    
+    
+};
 
 $.onShareLinkDialogLaunched = function(data) {
     Ti.API.info("inside onShareLinkDialogLaunched");
-}
+};
 
 $.onShareLinkDialogDismissed = function(data) {
     Ti.API.info("inside onShareLinkDialogDismissed");
-}
+};
 
 $.onShareLinkResponse = function(data) {
     Ti.API.info("inside onShareLinkResponse");
-}
+};
 
 $.onShareChannelSelected = function(data) {
     Ti.API.info("inside onShareChannelSelected");
-}
+};
 
 $.onCopyButtonClicked = function() {
     Ti.API.info("inside onCopyButtonClicked");
     Ti.UI.Clipboard.clearText();
     Ti.UI.Clipboard.setText($.linkTextArea.getValue());
-}
+};
 
 /*
  ************************************************
@@ -136,7 +175,7 @@ $.toggleButtons = function(enable) {
     $.registerViewButton.enabled = enable;
     $.generateUrlButton.enabled = enable;
     $.shareSheetButton.enabled = enable;
-}
+};
 
 function showData(data) {
     Ti.API.info("start showData");

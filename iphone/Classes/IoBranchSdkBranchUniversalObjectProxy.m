@@ -247,53 +247,45 @@
     });
 }
     
-- (void)setStandardBranchEvent:(id)args
+- (void)setBranchEvent:(id)args
     {
     NSLog(@"Inside setStandardBranchEvent");
-     
-        NSString *eventName = nil;
-        for (id key in args) {
-            if ([key isEqualToString:@"branchStandardEvent"]) {
-                eventName = [args valueForKey:key];;
-                break;
-            }
-        }
-        
+        NSString *eventName = [args objectAtIndex:0];
         BranchEvent *event    = [BranchEvent customEventWithName:eventName];
-        //BranchEvent *event    = [BranchEvent standardEvent:BranchStandardEventPurchase];
-       for (id key in args) {
+        NSDictionary *options = [args objectAtIndex:1];
+       for (id key in options) {
            if ([key isEqualToString:@"affiliation"]) {
-              event.affiliation = [args valueForKey:key];
+              event.affiliation = [options valueForKey:key];
            }
            if ([key isEqualToString:@"coupon"]) {
-               event.coupon = [args valueForKey:key];
+               event.coupon = [options valueForKey:key];
            }
            if ([key isEqualToString:@"currency"]) {
-               event.currency = [args valueForKey:key];
+               event.currency = [options valueForKey:key];
            }
            if ([key isEqualToString:@"description"]) {
-               event.eventDescription = [args valueForKey:key];
+               event.eventDescription = [options valueForKey:key];
            }
            if ([key isEqualToString:@"shipping"]) {
-               event.shipping =  [args valueForKey:key];
+               event.shipping =  [options valueForKey:key];
            }
            if ([key isEqualToString:@"tax"]) {
-               event.tax =  [args valueForKey:key];
+               event.tax =  [options valueForKey:key];
            }
            if ([key isEqualToString:@"revenue"]) {
-               event.revenue =  [args valueForKey:key];
+               event.revenue =  [options valueForKey:key];
            }
            if ([key isEqualToString:@"transactionID"]) {
-               event.transactionID = [args valueForKey:key];
+               event.transactionID = [options valueForKey:key];
            }
            if ([key isEqualToString:@"searchQuery"]) {
-               event.searchQuery  = [args valueForKey:key];
+               event.searchQuery  = [options valueForKey:key];
            }
            
            NSMutableDictionary *nsmmutableDictionary = [NSMutableDictionary new];
 
           if ([key isEqualToString:@"contentMetadata"]){
-              NSDictionary *metadata = (NSDictionary *)[args valueForKey:key];
+              NSDictionary *metadata = (NSDictionary *)[options valueForKey:key];
               for(id key_ in metadata){
                   [nsmmutableDictionary setObject:[metadata valueForKey:key_] forKey:key_];
               }
@@ -307,37 +299,7 @@
        
     }
     
-- (void)setCustomBranchEvent:(id)args
-    {
-        NSLog(@"setCustomBranchEvent");
-        
-        NSString *eventName = nil;
-        for (id key in args) {
-            if ([key isEqualToString:@"eventName"]) {
-                eventName = [args valueForKey:key];;
-                break;
-            }
-        }
-        
-        BranchEvent *event    = [BranchEvent customEventWithName:eventName];
-        for (id key in args) {
-            
-            NSMutableDictionary *nsmmutableDictionary = [NSMutableDictionary new];
-            
-            if ([key isEqualToString:@"contentMetadata"]){
-                NSDictionary *metadata = (NSDictionary *)[args valueForKey:key];
-                for(id key_ in metadata){
-                    [nsmmutableDictionary setObject:[metadata valueForKey:key_] forKey:key_];
-                }
-                event.customData = nsmmutableDictionary;
-                
-            }
-            
-            
-        }
-        event.contentItems = (id) @[ self.branchUniversalObj ];
-        [event logEvent];
-        
-    }
+    
+    
 
 @end

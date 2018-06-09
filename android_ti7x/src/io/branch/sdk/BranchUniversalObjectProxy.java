@@ -20,6 +20,7 @@ import io.branch.referral.SharingHelper;
 import io.branch.referral.util.LinkProperties;
 import io.branch.referral.util.ShareSheetStyle;
 import io.branch.referral.util.BranchEvent;
+import io.branch.referral.util.BRANCH_STANDARD_EVENT;
 import io.branch.referral.util.CurrencyType;
 
 import java.lang.Runnable;
@@ -229,12 +230,17 @@ public class BranchUniversalObjectProxy extends KrollProxy
 	}
 	
 	@Kroll.method
-	public void setStandardBranchEvent(KrollDict options)
+	public void setBranchEvent(String eventName, KrollDict options)
 	{
-		Log.d(LCAT, "start setStandardBranchEvent");
+		Log.d(LCAT, "start setBranchEvent");
 		final Activity activity = this.getActivity();
-
-		final BranchEvent branchEvent = new BranchEvent(options.getString("branchStandardEvent"));
+        BranchEvent branchEvent = null;
+        
+        branchEvent=getBranchEventByName(eventName);
+        if (null == branchEvent){
+            Log.d(LCAT, "start custom event");
+            branchEvent = new BranchEvent(eventName);
+        }
 		branchEvent.setAffiliation(options.getString("affiliation"));
 		branchEvent.setCoupon(options.getString("coupon"));
 		branchEvent.setCurrency(CurrencyType.getValue(options.getString("currency")));
@@ -261,32 +267,21 @@ public class BranchUniversalObjectProxy extends KrollProxy
 		branchEvent.logEvent(activity);
    
 	}
-
-
-	@Kroll.method
-	public void setCustomBranchEvent(KrollDict options)
-	{
-		Log.d(LCAT, "start setCustomBranchEvent");
-		final Activity activity = this.getActivity();
-
-		final BranchEvent branchEvent = new BranchEvent(options.getString("eventName"));
-		
-        if (options.containsKey("contentMetadata")) {
-            Log.d(LCAT, "addContentMetadata");
-            Object contentMetadata = options.get("contentMetadata");
-            Map<String,String> hashMap = (Map<String,String>)contentMetadata;
-            
-            for(Iterator iterator = hashMap.keySet().iterator(); iterator.hasNext();) {
-                String key = (String) iterator.next();
-                branchEvent.addCustomDataProperty(key, hashMap.get(key));
+    
+    // ------------ get standard branch event  by name
+     
+    private BranchEvent getBranchEventByName(String eventName){
+        BranchEvent branchEvent = null;
+        for (BRANCH_STANDARD_EVENT brchEvent : BRANCH_STANDARD_EVENT.values()) {
+            if (brchEvent.name().equals(eventName)) {
+                branchEvent = new BranchEvent(brchEvent);
+                return branchEvent;
             }
         }
-		branchEvent.addContentItems(branchUniversalObject);
-		
-		branchEvent.logEvent(activity);
-   
-	}
-	
+        return null;
+    }
+
+
 	//-----------  Property Getter/Setter ----------//
 	@Kroll.getProperty @Kroll.method
 	public String getCanonicalIdentifier()

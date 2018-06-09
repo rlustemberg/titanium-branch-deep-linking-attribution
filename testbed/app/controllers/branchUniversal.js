@@ -73,11 +73,22 @@ $.onRegisterViewButtonClicked = function() {
 
 $.onCustomEventViewButtonClicked = function() {
     Ti.API.info("inside onCustomEventViewButtonClicked");
-       branchUniversalObjectProxy.setCustomBranchEvent({
-    	"eventName" : "Logged_In",
+       var eventName="Custom";  
+    branchUniversalObjectProxy.setBranchEvent(
+    	eventName,
+    	{    	
+        "affiliation" : "sample-affiliation",
+        "coupon" : "sample-coupon",
+        "currency" : "USD",
+        "description" : "sample-description",
+        "shipping" : 10.2,
+        "tax" : 8.5,
+        "revenue" : 100.56,
+        "transactionID" : "abc123",
+        "searchQuery" : "sample-search",
         "contentMetadata" : {
-          "Custom_Event_Property_Key11" : "Custom_Event_Property_val11",
-          "Custom_Event_Property_Key22" : "Custom_Event_Property_val22"
+          "Custom_Event_Property_Key1" : "Custom_Event_Property_val1",
+          "Custom_Event_Property_Key2" : "Custom_Event_Property_val2"
       },
         
     });
@@ -85,9 +96,11 @@ $.onCustomEventViewButtonClicked = function() {
 };
 
 $.onStandardEventViewButtonClicked = function() {
-    Ti.API.info("inside onStandardEventViewButtonClicked");   
-    branchUniversalObjectProxy.setStandardBranchEvent({
-    	"branchStandardEvent" : "PURCHASE",
+    Ti.API.info("inside onStandardEventViewButtonClicked"); 
+    var eventName="PURCHASE";  
+    branchUniversalObjectProxy.setBranchEvent(
+    	eventName,
+    	{    	
         "affiliation" : "sample-affiliation",
         "coupon" : "sample-coupon",
         "currency" : "USD",

@@ -249,7 +249,6 @@
     
 - (void)setBranchEvent:(id)args
     {
-    NSLog(@"Inside setStandardBranchEvent");
         NSString *eventName = [args objectAtIndex:0];
         BranchEvent *event    = [BranchEvent customEventWithName:eventName];
         NSDictionary *options = [args objectAtIndex:1];

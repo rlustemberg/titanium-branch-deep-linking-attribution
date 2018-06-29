@@ -394,7 +394,38 @@ var branchUniversalObject = branch.createBranchUniversalObject({
 ```
 
 ___
+### Tracking User Actions and Events
 
+
+Use `BranchEvent` class to track special user actions or application specific events beyond app installs, opens, and sharing. You can track events such as when a user adds an item to an on-line shopping cart, or searches for a keyword etc.
+`BranchEvent` provides an interface to add content(s) represented by a BranchUniversalObject in order to associate content(s) with events.
+You can view analytics for the BranchEvents you fire on the Branch dashboard. BranchEvents provide a seamless integration with many third party analytics providers like Google Analytics, Criteo.
+`BRANCH_STANDARD_EVENT` enumerate the most commonly tracked events and event parameters that can be used with `BranchEvent` for the best results. You can always use custom event names and event parameters.
+
+##### Usage
+
+```js
+var eventName="PURCHASE";  
+branchUniversalObjectProxy.setBranchEvent(
++        eventName,
++        {
++        "affiliation" : "sample-affiliation",
++        "coupon" : "sample-coupon",
++        "currency" : "USD",
++        "description" : "sample-description",
++        "shipping" : 10.2,
++        "tax" : 8.5,
++        "revenue" : 100.56,
++        "transactionID" : "abc123",
++        "searchQuery" : "sample-search",
++        "contentMetadata" : {
++          "Custom_Event_Property_Key1" : "Custom_Event_Property_val1",
++          "Custom_Event_Property_Key2" : "Custom_Event_Property_val2"
++      },
++
++    });
+```
+___
 
 
 ### registerView()
@@ -632,6 +663,7 @@ This is the type of credit transaction
 2. 1 - A reward that was added manually
 3. 2 - A redemption of credits that occurred through our API or SDKs
 4. 3 - This is a very unique case where we will subtract credits automatically when we detect fraud
+
 
 
 ## Bugs / Help / Support

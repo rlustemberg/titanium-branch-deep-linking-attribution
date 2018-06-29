@@ -4,8 +4,15 @@
 //
 //
 
+
+
+
 #import "IoBranchSdkBranchUniversalObjectProxy.h"
 #import "TiApp.h"
+#import "Branch-SDK/BranchEvent.h"
+#import "Branch-SDK/Branch.h"
+
+
 
 @implementation IoBranchSdkBranchUniversalObjectProxy
 
@@ -178,7 +185,7 @@
 - (void)showShareSheet:(id)args
 {
     NSString *shareText = nil;
-
+    
     if ([args count]==2) {
         ENSURE_ARG_COUNT(args, 2);
         ENSURE_TYPE([args objectAtIndex:0], NSDictionary);
@@ -239,5 +246,59 @@
         }
     });
 }
+    
+- (void)setBranchEvent:(id)args
+    {
+        NSString *eventName = [args objectAtIndex:0];
+        BranchEvent *event    = [BranchEvent customEventWithName:eventName];
+        NSDictionary *options = [args objectAtIndex:1];
+       for (id key in options) {
+           if ([key isEqualToString:@"affiliation"]) {
+              event.affiliation = [options valueForKey:key];
+           }
+           if ([key isEqualToString:@"coupon"]) {
+               event.coupon = [options valueForKey:key];
+           }
+           if ([key isEqualToString:@"currency"]) {
+               event.currency = [options valueForKey:key];
+           }
+           if ([key isEqualToString:@"description"]) {
+               event.eventDescription = [options valueForKey:key];
+           }
+           if ([key isEqualToString:@"shipping"]) {
+               event.shipping =  [options valueForKey:key];
+           }
+           if ([key isEqualToString:@"tax"]) {
+               event.tax =  [options valueForKey:key];
+           }
+           if ([key isEqualToString:@"revenue"]) {
+               event.revenue =  [options valueForKey:key];
+           }
+           if ([key isEqualToString:@"transactionID"]) {
+               event.transactionID = [options valueForKey:key];
+           }
+           if ([key isEqualToString:@"searchQuery"]) {
+               event.searchQuery  = [options valueForKey:key];
+           }
+           
+           NSMutableDictionary *nsmmutableDictionary = [NSMutableDictionary new];
+
+          if ([key isEqualToString:@"contentMetadata"]){
+              NSDictionary *metadata = (NSDictionary *)[options valueForKey:key];
+              for(id key_ in metadata){
+                  [nsmmutableDictionary setObject:[metadata valueForKey:key_] forKey:key_];
+              }
+              event.customData = nsmmutableDictionary;
+
+           }
+       }
+        
+        event.contentItems = (id) @[ self.branchUniversalObj];
+        [event logEvent];
+       
+    }
+    
+    
+    
 
 @end

@@ -3,7 +3,7 @@
         <View class="first-section">
             <Button class="first-section-btn first-layer menu-left" title="init BUO" id="initBranchButton"/>
             <Button class="first-section-btn first-layer menu-right" title="register View" id="registerViewButton"/>
-        </View>
+        </View> 
         <View class="second-section">
             <Button class="second-section-btn first-layer" title="generate Url" id="generateUrlButton"/>
             <Button class="second-section-btn second-layer" title="share Sheet" id="shareSheetButton"/>
@@ -12,6 +12,10 @@
         <View class="third-section">
             <TextArea class="third-section-textarea first-layer menu-left" id="linkTextArea"/>
             <Button class="third-section-btn first-layer" title="Copy to Clipboard" id="copyButton"/>
+            <Button class="third-section-btn second-layer menu-left" title="track custom event" id="customEventViewButton"/>
+            <Button class="third-section-btn second-layer menu-right" title="track std event" id="standardEventViewButton"/>
+        
         </View>
+       
     </Window>
 </Alloy>

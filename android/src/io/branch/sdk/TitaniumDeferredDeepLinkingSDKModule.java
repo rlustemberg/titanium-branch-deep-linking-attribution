@@ -67,26 +67,6 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 
 	}
 
-	// Test methods
-	@Kroll.method
-	public String example()
-	{
-		Log.d(LCAT, "example called");
-		return "hello world";
-	}
-
-	@Kroll.getProperty
-	public String getExampleProp()
-	{
-		Log.d(LCAT, "get example property");
-		return "hello world";
-	}
-
-	@Kroll.setProperty
-	public void setExampleProp(String value) {
-		Log.d(LCAT, "set example property: " + value);
-	}
-
 	//----------- Methods ----------//
 	// Public Methods
 
@@ -99,7 +79,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 		Intent intent = obj.getIntent();
 		PrefHelper prefHelper_ = PrefHelper.getInstance(TiApplication.getInstance());
 		if(data != null){
-			
+
 
 	        if (data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey()) != null) {
 	            prefHelper_.setLinkClickIdentifier(data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey()));
@@ -129,11 +109,11 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	                // Intent will have App link in data and lead to issue of getting wrong parameters. (In case of link click id since we are  looking for actual link click on back end this case will never happen)
 	                if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == 0) {
 	                    if ((scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))
-	                            && data.getHost() != null && data.getHost().length() > 0 && data.getQueryParameter(Defines.Jsonkey.BranchLinkUsed.getKey()) == null) {
+	                            && data.getHost() != null && data.getHost().length() > 0 && data.getQueryParameter(Defines.IntentKeys.BranchLinkUsed.getKey()) == null) {
 	                        prefHelper_.setAppLink(data.toString());
 	                        String uriString = data.toString();
 	                        uriString += uriString.contains("?") ? "&" : "?";
-	                        uriString += Defines.Jsonkey.BranchLinkUsed.getKey() + "=true";
+	                        uriString += Defines.IntentKeys.BranchLinkUsed.getKey() + "=true";
 	                        intent.setData(Uri.parse(uriString));
 	                    }
 	                }
@@ -144,10 +124,10 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 
 	@Kroll.method
 	public void initSession()
-	{
+	{		
 		Log.d(LCAT, "start init");
 		final Activity activity = this.getActivity();
-		branchInstance_.initSession(new SessionListener(), activity.getIntent().getData(), activity);
+		Branch.sessionBuilder(activity).withCallback(new SessionListener()).withData(activity.getIntent().getData()).init();
 	}
 
 	@Kroll.method
@@ -156,19 +136,26 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 		Log.d(LCAT, "start init");
 		final Activity activity = this.getActivity();
 		if (data == null) {
-			branchInstance_.initSession(new SessionListener(), activity.getIntent().getData(), activity);
+			Branch.sessionBuilder(activity).withCallback(new SessionListener()).withData(activity.getIntent().getData()).init();
 		} else {
 			Uri uri = Uri.parse(data);
-			branchInstance_.initSession(new SessionListener(), uri, activity);
+			Branch.sessionBuilder(activity).withCallback(new SessionListener()).withData(uri).init();
 		}
 	}
+
+	@Kroll.method
+  public void setDebug()
+  {
+  		Log.d(LCAT, "start setDebug");
+ 		Branch.enableLogging();
+ 	}
 
 	@Kroll.method
 	public KrollDict getLatestReferringParams()
 	{
 		Log.d(LCAT, "start getLatestReferringParams");
 		final Activity activity = this.getActivity();
-		
+
 		JSONObject sessionParams = branchInstance_.getLatestReferringParams();
 		if (sessionParams == null) {
     		Log.d(LCAT, "return is null");
@@ -186,7 +173,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	{
 		Log.d(LCAT, "start getFirstReferringParams");
 		final Activity activity = this.getActivity();
-		
+
 		JSONObject installParams = branchInstance_.getFirstReferringParams();
 		if (installParams == null) {
     		Log.d(LCAT, "return is null");
@@ -204,7 +191,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	{
 		Log.d(LCAT, "start setIdentity");
 		final Activity activity = this.getActivity();
-		
+
 		branchInstance_.setIdentity(identity);
 	}
 
@@ -231,7 +218,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	{
 		Log.d(LCAT, "start loadRewards");
 		final Activity activity = this.getActivity();
-		
+
 		branchInstance_.loadRewards(new LoadRewardsListener());
 	}
 
@@ -240,7 +227,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 	{
 		Log.d(LCAT, "start redeemRewards");
 		final Activity activity = this.getActivity();
-		
+
 		branchInstance_.redeemRewards(value);
 	}
 
@@ -289,12 +276,25 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 		Log.d(LCAT, "start getCreditsForBucket" + bucket);
 
 		final Activity activity = this.getActivity();
-		
+
 		int credits =branchInstance_.getCreditsForBucket(bucket);
 		response.put("bucket", bucket);
 	    response.put("credits", credits);
 
 	    return response;
+	}
+	
+	@Kroll.method
+	public void disableTracking(boolean trackingDisableFlag)
+	{		
+		Log.d(LCAT, "Is User tracking disabled - " + trackingDisableFlag);
+		branchInstance_.disableTracking(trackingDisableFlag);
+	}
+	
+	@Kroll.method
+	public boolean isTrackingDisabled()
+	{
+		return branchInstance_.isTrackingDisabled();
 	}
 
 	// Private Methods
@@ -412,7 +412,7 @@ public class TitaniumDeferredDeepLinkingSDKModule extends KrollModule
 
 	        TitaniumDeferredDeepLinkingSDKModule self = TitaniumDeferredDeepLinkingSDKModule.this;
 			KrollDict response = new KrollDict();
-			
+
 			if (error == null) {
 				response.put("result", "success");
 			} else {

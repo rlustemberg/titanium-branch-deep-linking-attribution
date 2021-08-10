@@ -2,9 +2,9 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 3.0.0
+version: 2.0.0
 apiversion: 4
-architectures: arm64-v8a armeabi-v7a x86 x86_64
+architectures: arm64-v8a armeabi-v7a x86
 description: Titanium-Deferred-Deep-Linking-SDK
 author: Branch Metrics
 license: MIT
@@ -15,4 +15,4 @@ name: Titanium-Deferred-Deep-Linking-SDK
 moduleid: io.branch.sdk
 guid: df14a182-464d-4940-bc1d-ae84730366a8
 platform: android
-minsdk: 9.0.0
+minsdk: 7.1.0.GA

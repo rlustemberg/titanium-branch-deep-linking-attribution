@@ -17,8 +17,8 @@ $.initialize = function(params) {
 
 $.initializeViews = function() {
     Ti.API.info("start initializeViews");
-    $.linkTextArea.setEditable(false);
-    $.linkTextArea.setValue("generated link here");
+    $.linkTextArea.editable = false;
+    $.linkTextArea.value = "generated link here";
 };
 
 $.initializeHandlers = function() {
@@ -53,7 +53,7 @@ $.onInitBranchButtonClicked = function() {
     // Branch Universal Object Listeners
     branchUniversalObjectProxy.addEventListener("bio:generateShortUrl", $.onGenerateUrlFinished);
     branchUniversalObjectProxy.addEventListener("bio:shareChannelSelected", $.onShareChannelSelected);
-    
+
     if (OS_ANDROID) {
         branchUniversalObjectProxy.addEventListener("bio:shareLinkDialogLaunched", $.onShareLinkDialogLaunched);
         branchUniversalObjectProxy.addEventListener("bio:shareLinkDialogDismissed", $.onShareLinkDialogDismissed);
@@ -73,10 +73,10 @@ $.onRegisterViewButtonClicked = function() {
 
 $.onCustomEventViewButtonClicked = function() {
     Ti.API.info("inside onCustomEventViewButtonClicked");
-       var eventName="Custom";  
+       var eventName="Custom";
     branchUniversalObjectProxy.setBranchEvent(
     	eventName,
-    	{    	
+    	{
         "affiliation" : "sample-affiliation",
         "coupon" : "sample-coupon",
         "currency" : "USD",
@@ -90,17 +90,17 @@ $.onCustomEventViewButtonClicked = function() {
           "Custom_Event_Property_Key1" : "Custom_Event_Property_val1",
           "Custom_Event_Property_Key2" : "Custom_Event_Property_val2"
       },
-        
+
     });
     showData({"customEventView":"success"});
 };
 
 $.onStandardEventViewButtonClicked = function() {
-    Ti.API.info("inside onStandardEventViewButtonClicked"); 
-    var eventName="PURCHASE";  
+    Ti.API.info("inside onStandardEventViewButtonClicked");
+    var eventName="PURCHASE";
     branchUniversalObjectProxy.setBranchEvent(
     	eventName,
-    	{    	
+    	{
         "affiliation" : "sample-affiliation",
         "coupon" : "sample-coupon",
         "currency" : "USD",
@@ -114,7 +114,7 @@ $.onStandardEventViewButtonClicked = function() {
           "Custom_Event_Property_Key1" : "Custom_Event_Property_val1",
           "Custom_Event_Property_Key2" : "Custom_Event_Property_val2"
       },
-        
+
     });
     showData({"standardEventView":"success"});
 };
@@ -131,14 +131,14 @@ $.onGenerateUrlButtonClicked = function() {
     }, function (res) {
         Ti.API.info('Generated Short URL');
         Ti.API.info(res);
-        $.linkTextArea.setValue(res["generatedLink"]);
+        $.linkTextArea.value = res["generatedLink"];
     });
 };
 
 $.onGenerateUrlFinished = function(data) {
     Ti.API.info("inside onGenerateUrlFinished");
     Ti.API.info("GenerateUrlFinished: " + data["generatedLink"]);
-    $.linkTextArea.setValue(data["generatedLink"]);
+    $.linkTextArea.value = data["generatedLink"];
 };
 
 $.onShareSheetButtonClicked = function() {
@@ -153,8 +153,8 @@ $.onShareSheetButtonClicked = function() {
         "$email_subject" : "This is a sample subject",
         "$email_body" : "This is a sample body",
     });
-    
-    
+
+
 };
 
 $.onShareLinkDialogLaunched = function(data) {
@@ -176,7 +176,7 @@ $.onShareChannelSelected = function(data) {
 $.onCopyButtonClicked = function() {
     Ti.API.info("inside onCopyButtonClicked");
     Ti.UI.Clipboard.clearText();
-    Ti.UI.Clipboard.setText($.linkTextArea.getValue());
+    Ti.UI.Clipboard.setText($.linkTextArea.value);
 };
 
 /*

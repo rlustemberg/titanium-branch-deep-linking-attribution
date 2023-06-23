@@ -17,8 +17,12 @@ import io.branch.referral.BranchError;
 import io.branch.referral.BranchShortLinkBuilder;
 import io.branch.referral.Defines;
 import io.branch.referral.SharingHelper;
+import io.branch.referral.util.ContentMetadata;
 import io.branch.referral.util.LinkProperties;
 import io.branch.referral.util.ShareSheetStyle;
+import io.branch.referral.util.BranchEvent;
+import io.branch.referral.util.BRANCH_STANDARD_EVENT;
+import io.branch.referral.util.CurrencyType;
 
 import java.lang.Runnable;
 import java.lang.Thread;
@@ -30,8 +34,8 @@ import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiC;
-import org.appcelerator.titanium.util.Log;
-import org.appcelerator.titanium.util.TiConfig;
+import org.appcelerator.kroll.common.Log;
+import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.util.TiRHelper;
 
@@ -225,6 +229,59 @@ public class BranchUniversalObjectProxy extends KrollProxy
             }
         });
 	}
+	
+	@Kroll.method
+	public void setBranchEvent(String eventName, KrollDict options)
+	{
+		Log.d(LCAT, "start setBranchEvent");
+		final Activity activity = this.getActivity();
+        BranchEvent branchEvent = null;
+        
+        branchEvent=getBranchEventByName(eventName);
+        if (null == branchEvent){
+            Log.d(LCAT, "start custom event");
+            branchEvent = new BranchEvent(eventName);
+        }
+		branchEvent.setAffiliation(options.getString("affiliation"));
+		branchEvent.setCoupon(options.getString("coupon"));
+		branchEvent.setCurrency(CurrencyType.getValue(options.getString("currency")));
+		branchEvent.setDescription(options.getString("description"));
+		branchEvent.setShipping(options.getDouble("shipping"));
+		branchEvent.setTax(options.getDouble("tax"));
+		branchEvent.setRevenue(options.getDouble("revenue"));
+		branchEvent.setTransactionID(options.getString("transactionID"));
+		branchEvent.setSearchQuery(options.getString("searchQuery"));
+        
+        
+        if (options.containsKey("contentMetadata")) {
+            Log.d(LCAT, "addContentMetadata");
+            Object contentMetadata = options.get("contentMetadata");
+            Map<String,String> hashMap = (Map<String,String>)contentMetadata;
+            
+            for(Iterator iterator = hashMap.keySet().iterator(); iterator.hasNext();) {
+                String key = (String) iterator.next();
+                branchEvent.addCustomDataProperty(key, hashMap.get(key));
+            }
+        }
+		branchEvent.addContentItems(branchUniversalObject);
+		
+		branchEvent.logEvent(activity);
+   
+	}
+    
+    // ------------ get standard branch event  by name
+     
+    private BranchEvent getBranchEventByName(String eventName){
+        BranchEvent branchEvent = null;
+        for (BRANCH_STANDARD_EVENT brchEvent : BRANCH_STANDARD_EVENT.values()) {
+            if (brchEvent.name().equals(eventName)) {
+                branchEvent = new BranchEvent(brchEvent);
+                return branchEvent;
+            }
+        }
+        return null;
+    }
+
 
 	//-----------  Property Getter/Setter ----------//
 	@Kroll.getProperty @Kroll.method
@@ -305,7 +362,9 @@ public class BranchUniversalObjectProxy extends KrollProxy
 	public void addContentMetadata(String key, String value)
 	{
 	    Log.d(LCAT, "addContentMetadata");
-		branchUniversalObject.addContentMetadata(key, value);
+		ContentMetadata cm = new ContentMetadata();
+		cm.addCustomMetadata(key ,value);
+		branchUniversalObject.setContentMetadata(cm);
 	}
 
 	//----------- Private Methods ----------//

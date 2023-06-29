@@ -5,8 +5,9 @@
 //
 
 #import "TiProxy.h"
-#import "BranchUniversalObject.h"
-#import "BranchLinkProperties.h"
+@import BranchSDK;
+//#import "BranchUniversalObject.h"
+//#import "BranchLinkProperties.h"
 
 @interface IoBranchSdkBranchUniversalObjectProxy : TiProxy
 

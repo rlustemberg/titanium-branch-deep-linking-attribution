@@ -9,8 +9,8 @@
 
 #import "IoBranchSdkBranchUniversalObjectProxy.h"
 #import "TiApp.h"
-#import "Branch-SDK/BranchEvent.h"
-#import "Branch-SDK/Branch.h"
+#import <BranchSDK/BranchEvent.h>
+#import <BranchSDK/Branch.h>
 
 
 
@@ -199,7 +199,7 @@
 
         shareText = [args objectAtIndex:2];
     }
-
+ /*
     NSDictionary *options = [args objectAtIndex:0];
     NSDictionary *controlParams = [args objectAtIndex:1];
     NSMutableDictionary *mutableCombinedParams = [options mutableCopy];
@@ -245,6 +245,7 @@
             [popup presentPopoverFromRect:CGRectMake(view.view.frame.size.width/2, view.view.frame.size.width/2, 100, 100) inView:view.view permittedArrowDirections:0 animated:YES];
         }
     });
+  */
 }
     
 - (void)setBranchEvent:(id)args

@@ -14,7 +14,7 @@
 #import "TiHost.h"
 #import "TiUtils.h"
 
-#import "Branch-SDK/Branch.h"
+@import BranchSDK;
 
 #import <objc/runtime.h>
 #import "JRSwizzle.h"
